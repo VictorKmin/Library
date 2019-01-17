@@ -10,8 +10,7 @@ module.exports = async (token, secretWorld) => {
         if (decoded.exp <= unixNow) throw new Error('TOKEN EXPIRED');
         user = {
             id: decoded.id,
-            name: decoded.name,
-            email: decoded.userMail
+            email: decoded.email,
         }
     });
     console.log(user);

@@ -1,10 +1,10 @@
 const router = require('express').Router();
 
-let loginController = require('../controllers/login');
-let logoutController = require('../controllers/logout');
+let loginController = require('../controllers/login/login');
+let logoutController = require('../controllers/login/logout');
 
 
-router.get('/login', loginController);
+router.post('/login', loginController);
 router.delete('/login', logoutController);
 
 module.exports = router;
