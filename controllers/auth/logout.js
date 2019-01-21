@@ -1,10 +1,10 @@
 const viryfiToken = require('../../helper/tokenVerificator');
 const secretWord = require('../../config/secrets').secret;
-const DataBaase = require('../../DataBase').getInstance();
+const dataBase = require('../../dataBase').getInstance();
 module.exports = async (req, res) => {
 
     try {
-        let TokenModel = DataBaase.getModel('Token');
+        let TokenModel = dataBase.getModel('Token');
         const token = req.get('Authorization');
         if (!token) throw new Error('Have not token');
         await viryfiToken(token, secretWord);

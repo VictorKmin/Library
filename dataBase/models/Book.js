@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
             subject: {
                 type: DataTypes.STRING
             },
-            who_add: {
+            user_id: {
                 type: DataTypes.INTEGER
             },
             publisher: {

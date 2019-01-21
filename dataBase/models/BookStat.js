@@ -1,28 +1,28 @@
 'use strict';
 
 module.exports = (sequelize, DataTypes) => {
-    const Comments = sequelize.define('Comments', {
+    const BookStat = sequelize.define('BookStat', {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true
             },
-            bookid: {
+            book_id: {
                 type: DataTypes.INTEGER
             },
-            authorid: {
-                type: DataTypes.STRING
+            get_time: {
+                type: DataTypes.DATE
             },
-            fulldate: {
-                type: DataTypes.STRING
+            back_time: {
+                type: DataTypes.DATE
             },
-            comment: {
-                type: DataTypes.TEXT
+            user_id: {
+                type: DataTypes.INTEGER
             }
         },
         {
-            tableName: 'comments',
+            tableName: 'bookstat',
             timestamps: false
         });
-    return Comments
+    return BookStat
 };

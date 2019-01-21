@@ -1,13 +1,11 @@
 const jwt = require('jsonwebtoken');
 module.exports = async (token, secretWorld) => {
-    let unixNow = Math.floor(Date.now() / 1000);
     let user = null;
 
     if (!token || !secretWorld) throw new Error('Have not token or secret word');
 
     jwt.verify(token, secretWorld, (err, decoded) => {
-        if (err) throw new Error('You have bad auth.');
-        if (decoded.exp <= unixNow) throw new Error('TOKEN EXPIRED');
+        if (err) throw new Error(err.message);
         user = {
             id: decoded.id,
             email: decoded.email,

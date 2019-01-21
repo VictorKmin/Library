@@ -1,4 +1,4 @@
-const DataBase = require('../../DataBase').getInstance();
+const DataBase = require('../../dataBase').getInstance();
 const Sequelize = require("sequelize");
 
 /**
@@ -13,6 +13,8 @@ const Sequelize = require("sequelize");
  */
 module.exports = async (req, res) => {
     try {
+        let page = req.params.page;
+        let limit = req.params.limit;
         let top5Book = [];
         let top5BooksIds = [];
         const BookModel = DataBase.getModel('Book');
@@ -21,21 +23,21 @@ module.exports = async (req, res) => {
         // SELECT bookid, AVG(star), COUNT(id) FROM rating GROUP BY bookid ORDER BY AVG(star) DESC LIMIT 5;
         const booksInfo = await RatingModel.findAll({
             attributes: [
-                'bookid',
+                'book_id',
                 [Sequelize.fn('AVG', Sequelize.col('star')), 'avgStar'],
                 [Sequelize.fn('COUNT', Sequelize.col('id')), 'countOfVotes']
             ],
-            group: 'bookid',
+            group: 'book_id',
             order: [[Sequelize.fn('AVG', Sequelize.col('star')), 'DESC']],
-            limit: 5
+            limit
         });
 
         booksInfo.forEach(book => {
-            const {bookid, avgStar, countOfVotes} = book.dataValues;
+            const {book_id, avgStar, countOfVotes} = book.dataValues;
             // Push in this array just fot search from Book table
-            top5BooksIds.push(bookid);
+            top5BooksIds.push(book_id);
             top5Book.push({
-                id: bookid,
+                id: book_id,
                 avgStar: +((+avgStar).toFixed(1)),
                 countOfVotes: +countOfVotes
             })
@@ -43,7 +45,7 @@ module.exports = async (req, res) => {
 
         top5Book.sort((a, b) => a.id - b.id);
 
-        // SELECT * FROM book WHERE  id IN top5BooksIds
+        // SELECT * FROM book WHERE id IN top5BooksIds
         const top5 = await BookModel.findAll({
             where: {
                 id: top5BooksIds

@@ -1,4 +1,4 @@
-const DataBase = require('../../DataBase').getInstance();
+const DataBase = require('../../dataBase').getInstance();
 const Sequelize = require("sequelize");
 
 module.exports = async (req, res) => {
@@ -18,19 +18,20 @@ module.exports = async (req, res) => {
                 [Sequelize.fn('COUNT', Sequelize.col('comment')), 'countOfComments']
             ],
             where: {
-                bookid: id
+                book_id: id
             },
-            group: 'bookid'
+            group: 'book_id'
         });
 
         console.log(comments);
         let countOfComments;
-        if (!comments[0]) {
-            countOfComments = 0;
-        } else {
-            countOfComments = comments[0].dataValues.countOfComments
-        }
-        book.dataValues.countOfComments = countOfComments;
+        //
+        // if (!comments[0]) {
+        //     countOfComments = 0;
+        // } else {
+        //     countOfComments = comments[0].dataValues.countOfComments
+        // }
+        book.dataValues.countOfComments = comments.length;
 
         res.json({
             success: true,

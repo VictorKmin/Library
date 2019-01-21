@@ -1,4 +1,4 @@
-const DataBase = require('../../DataBase').getInstance();
+const DataBase = require('../../dataBase').getInstance();
 const hasher = require('../../helper/passwordHasher');
 const tokenizer = require('../../helper/tokinazer').accessAndRefresh;
 

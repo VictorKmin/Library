@@ -1,25 +1,26 @@
 'use strict';
 
 module.exports = (sequelize, DataTypes) => {
-    const BookStat = sequelize.define('BookStat', {
+    const User = sequelize.define('User', {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true
             },
-            bookid: {
-                type: DataTypes.INTEGER
-            },
-            get_time: {
+            name: {
                 type: DataTypes.STRING
             },
-            bac_time: {
+            email: {
+                type: DataTypes.STRING
+            },
+            password: {
                 type: DataTypes.STRING
             }
         },
         {
-            tableName: 'bookstat',
+            tableName: 'users',
             timestamps: false
-        });
-    return BookStat
+        }
+    );
+    return User
 };

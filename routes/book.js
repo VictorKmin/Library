@@ -1,10 +1,12 @@
 const router = require('express').Router();
 
-let top5ByRating = require('../controllers/book/getTop5ByRating');
-let infoAboutBook = require('../controllers/book/getInfoAboutBook');
+let topBooks = require('../controllers/book/getTopBooks');
+let getBookInfo = require('../controllers/book/getBookInfo');
 
-
-router.get('/gettop5', top5ByRating);
-router.get('/:id', infoAboutBook);
+// /books?top=5
+router.get('/top/:page/:limit', topBooks);
+router.get('/:id', getBookInfo);
 
 module.exports = router;
+
+

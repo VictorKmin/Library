@@ -1,6 +1,5 @@
-const DataBase = require('../../DataBase').getInstance();
+const DataBase = require('../../dataBase').getInstance();
 const tokenVerifiactor = require('../../helper/tokenVerificator');
-const dateBuilder = require('../../helper/dateBuilder');
 const secret = require('../../config/secrets').secret;
 module.exports = async (req, res) => {
     try {
@@ -8,20 +7,19 @@ module.exports = async (req, res) => {
         const token = req.get('Authorization');
         if (!token) throw new Error('No token');
         const {id, email} = tokenVerifiactor(token, secret);
-        const fulldate = dateBuilder();
+
         const {bookId, comment} = req.body;
 
         await CommentModel.create({
-            authorid: id,
-            fulldate,
+            author_id: id,
+            full_date : new Date().toISOString(),
             comment,
-            bookid: bookId
+            book_id: bookId
         });
 
-        // EMIT EVENT
         res.json({
             success: true,
-            message: 'OK'
+            message: 'Comment is crated'
         })
     } catch (e) {
         console.log(e);

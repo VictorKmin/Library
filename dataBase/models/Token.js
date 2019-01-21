@@ -1,25 +1,22 @@
 'use strict';
 
 module.exports = (sequelize, DataTypes) => {
-    const Rating = sequelize.define('Rating', {
+    const Token = sequelize.define('Token', {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true
             },
-            userid: {
+            user_id: {
                 type: DataTypes.INTEGER
             },
-            bookid: {
-                type: DataTypes.INTEGER
-            },
-            star: {
-                type: DataTypes.INTEGER
+            token: {
+                type: DataTypes.STRING
             }
         },
         {
-            tableName: 'rating',
+            tableName: 'auth_access',
             timestamps: false
         });
-    return Rating
+    return Token
 };

@@ -1,26 +1,24 @@
 const Sequelize = require('sequelize');
 const fs = require('fs');
 const resolve = require('path').resolve;
-const DBName = require('../config/dataBase').baseName;
-const DBUser = require('../config/dataBase').userName;
-const DBPass = require('../config/dataBase').password;
+const {database, host, password, username, dialect} = require('../config/dataBase');
 
 module.exports = (() => {
     let instance;
 
     function initConnection() {
-        let client = new Sequelize(DBName, DBUser, DBPass, {
-            host: 'localhost',
-            dialect: 'postgres',
+        let client = new Sequelize(database, username, password, {
+            host,
+            dialect,
             operatorsAliases: false,
         });
         let models = {};
 
         function getModels() {
-            fs.readdir('./DataBase/models', (err, files) => {
+            fs.readdir('./dataBase/models', (err, files) => {
                 files.forEach(file => {
                     const modelName = file.split('.')[0];
-                    models[modelName] = client.import(resolve(`./DataBase/models/${modelName}`));
+                    models[modelName] = client.import(resolve(`./dataBase/models/${modelName}`));
                 });
             });
         }

@@ -1,8 +1,7 @@
-const DBUser = 'ukrinsoft';
-const DBPass = '2009';
-const DBName = 'library';
-
-
-module.exports.userName = DBUser;
-module.exports.password = DBPass;
-module.exports.baseName = DBName;
+module.exports = Object.freeze({
+    "host": "localhost",
+    "dialect" : "postgres",
+    "username": 'ukrinsoft',
+    "password": '2009',
+    "database": 'library'
+});

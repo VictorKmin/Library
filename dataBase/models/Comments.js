@@ -1,22 +1,28 @@
 'use strict';
 
 module.exports = (sequelize, DataTypes) => {
-    const Token = sequelize.define('Token', {
+    const Comments = sequelize.define('Comments', {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true
             },
-            userid: {
+            book_id: {
                 type: DataTypes.INTEGER
             },
-            token: {
+            user_id: {
                 type: DataTypes.STRING
-            }
+            },
+            comment: {
+                type: DataTypes.TEXT
+            },
+            created_at: {
+                type: DataTypes.DATE
+            },
         },
         {
-            tableName: 'token',
+            tableName: 'comments',
             timestamps: false
         });
-    return Token
+    return Comments
 };
