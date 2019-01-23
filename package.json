@@ -9,12 +9,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^3.0.3",
     "chalk": "latest",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.4.0",
     "pg": "^7.8.0",
     "sequelize": "^4.42.0",
     "socket.io": "^2.2.0"
+  },
+  "devDependencies": {
+    "bcrypt": "^3.0.0"
   }
 }

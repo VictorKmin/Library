@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = (sequelize, DataTypes) => {
-    const Comments = sequelize.define('Comments', {
+    const Comment = sequelize.define('Comment', {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.INTEGER
             },
             user_id: {
-                type: DataTypes.STRING
+                type: DataTypes.INTEGER
             },
             comment: {
                 type: DataTypes.TEXT
@@ -24,5 +24,8 @@ module.exports = (sequelize, DataTypes) => {
             tableName: 'comments',
             timestamps: false
         });
-    return Comments
+
+    const User = sequelize.import('./User.js');
+    Comment.belongsTo(User, {foreignKey: 'user_id'});
+    return Comment
 };

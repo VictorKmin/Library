@@ -1,8 +1,8 @@
 const viryfiToken = require('../../helper/tokenVerificator');
 const secretWord = require('../../config/secrets').secret;
 const dataBase = require('../../dataBase').getInstance();
+const chalk = require('chalk')
 module.exports = async (req, res) => {
-
     try {
         let TokenModel = dataBase.getModel('Token');
         const token = req.get('Authorization');
@@ -10,9 +10,11 @@ module.exports = async (req, res) => {
         await viryfiToken(token, secretWord);
         await TokenModel.destroy({
             where: {
-                accessToken: token
+                token
             }
         });
+
+        console.log(chalk.blue('User is logged out'));
         res.json({
             success: true,
             message: 'You are logged out'

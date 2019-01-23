@@ -36,11 +36,17 @@ module.exports = (sequelize, DataTypes) => {
             },
             publisher: {
                 type: DataTypes.STRING
+            },
+            image: {
+                type: DataTypes.TEXT
             }
         },
         {
             tableName: 'book',
             timestamps: false
         });
+
+    const User = sequelize.import('./User.js');
+    Book.belongsTo(User, {foreignKey: 'user_id'});
     return Book
 };

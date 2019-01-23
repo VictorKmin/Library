@@ -8,7 +8,8 @@ module.exports = (sequelize, DataTypes) => {
                 autoIncrement: true
             },
             book_id: {
-                type: DataTypes.INTEGER
+                type: DataTypes.INTEGER,
+                foreignKey: true
             },
             get_time: {
                 type: DataTypes.DATE
@@ -17,12 +18,19 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.DATE
             },
             user_id: {
-                type: DataTypes.INTEGER
+                type: DataTypes.INTEGER,
+                foreignKey: true
             }
         },
         {
             tableName: 'bookstat',
             timestamps: false
         });
+
+    const User = sequelize.import('./User.js');
+    BookStat.belongsTo(User, {foreignKey: 'user_id'});
+
+    const Book = sequelize.import('./Book.js');
+    BookStat.belongsTo(Book, {foreignKey: 'book_id'});
     return BookStat
 };

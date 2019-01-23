@@ -43,7 +43,6 @@ module.exports = async (req, res) => {
             })
         });
 
-        top5Book.sort((a, b) => a.id - b.id);
 
         // SELECT * FROM book WHERE id IN top5BooksIds
         const top5 = await BookModel.findAll({
@@ -52,14 +51,13 @@ module.exports = async (req, res) => {
             }
         });
 
-        top5Book.map((bookStat, index) => {
-            console.log(bookStat);
-            console.log(top5[index].dataValues.id);
-
-            bookStat.bookInfo = top5[index].dataValues;
+        top5Book.map((bookStat) => {
+            top5.forEach(value => {
+                if (bookStat.id === value.dataValues.id) {
+                    bookStat.bookInfo = value.dataValues;
+                }
+            });
         });
-
-        top5Book.sort((a, b) => b.avgStar - a.avgStar);
 
         res.json({
             success: true,

@@ -4,7 +4,7 @@ const Sequelize = require("sequelize");
 module.exports = async (req, res) => {
     try {
         const BookModel = DataBase.getModel('Book');
-        const ComentsModel = DataBase.getModel('Comments');
+        const CommentModel = DataBase.getModel('Comment');
         const id = req.params.id;
         if (!id) throw new Error('U have not id in url');
 
@@ -13,7 +13,7 @@ module.exports = async (req, res) => {
         if (!book) throw new Error('We have not this book in DataBase');
 
         // SELECT COUNT("comment") FROM comments WHERE bookid = id GROUP BY bookid;
-        const comments = await ComentsModel.findAll({
+        const comments = await CommentModel.findAll({
             attributes: [
                 [Sequelize.fn('COUNT', Sequelize.col('comment')), 'countOfComments']
             ],
@@ -23,15 +23,14 @@ module.exports = async (req, res) => {
             group: 'book_id'
         });
 
-        console.log(comments);
         let countOfComments;
-        //
-        // if (!comments[0]) {
-        //     countOfComments = 0;
-        // } else {
-        //     countOfComments = comments[0].dataValues.countOfComments
-        // }
-        book.dataValues.countOfComments = comments.length;
+
+        if (!comments[0]) {
+            countOfComments = 0;
+        } else {
+            countOfComments = comments[0].dataValues.countOfComments
+        }
+        book.dataValues.countOfComments = countOfComments;
 
         res.json({
             success: true,

@@ -21,5 +21,8 @@ module.exports = (sequelize, DataTypes) => {
             tableName: 'rating',
             timestamps: false
         });
+
+    const Book = sequelize.import('./Book.js');
+    Rating.belongsTo(Book, {foreignKey: 'book_id'});
     return Rating
 };

@@ -7,12 +7,12 @@ module.exports = async (req, res) => {
         const token = req.get('Authorization');
         if (!token) throw new Error('No token');
         const {id, email} = tokenVerifiactor(token, secret);
-
+        console.log(id);
         const {bookId, comment} = req.body;
 
         await CommentModel.create({
-            author_id: id,
-            full_date : new Date().toISOString(),
+            user_id: id,
+            created_at: new Date().toISOString(),
             comment,
             book_id: bookId
         });
@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
             message: 'Comment is crated'
         })
     } catch (e) {
-        console.log(e);
+        console.log(e.message);
         res.json({
             success: false,
             message: e.message

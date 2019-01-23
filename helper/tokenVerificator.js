@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-module.exports = async (token, secretWorld) => {
+module.exports = (token, secretWorld) => {
     let user = null;
 
     if (!token || !secretWorld) throw new Error('Have not token or secret word');
