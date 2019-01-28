@@ -11,15 +11,15 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.INTEGER,
                 foreignKey: true
             },
+            user_id: {
+                type: DataTypes.INTEGER,
+                foreignKey: true
+            },
             get_time: {
                 type: DataTypes.DATE
             },
             back_time: {
                 type: DataTypes.DATE
-            },
-            user_id: {
-                type: DataTypes.INTEGER,
-                foreignKey: true
             }
         },
         {

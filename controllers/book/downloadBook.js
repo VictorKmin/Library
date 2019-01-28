@@ -5,32 +5,27 @@ const secret = require('../../config/secrets').secret;
 module.exports = async (req, res) => {
     try {
         const BookModel = DataBase.getModel('Book');
-        const BookStatModel = DataBase.getModel('BookStat');
+        const DigitalModel = DataBase.getModel('DigitalInfo');
         const token = req.get('Authorization');
         if (!token) throw new Error('No token');
         const {id, email} = tokenVerifiactor(token, secret);
         const bookId = req.params.id;
+        if (!bookId) throw new Error('Please select book first');
+        const isBookPresent = await BookModel.findByPk(bookId);
+        if (!isBookPresent) throw new Error('Book not found');
+        if (!isBookPresent.dataValues.is_digital) throw new Error('Book is not digital');
 
-        const backTime = new Date(Date.now() + 86400000 * 31).toISOString();
-
-        await BookModel.update({
-            is_reading: true,
-        }, {
+        const bookInfo = await DigitalModel.findAll({
             where: {
-                id: bookId
+                book_id: bookId
             }
         });
 
-        await BookStatModel.create({
-            book_id: bookId,
-            user_id: id,
-            get_time: new Date().toISOString(),
-            back_time: backTime
-        });
+        if (!bookInfo) throw new Error('No files');
 
         res.json({
             success: true,
-            message: 'Book status is changed'
+            message: bookInfo
         })
     } catch
         (e) {

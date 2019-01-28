@@ -13,32 +13,30 @@ module.exports = (sequelize, DataTypes) => {
             author: {
                 type: DataTypes.STRING
             },
-            type_of_content: {
-                type: DataTypes.STRING
-            },
-            type_of_book: {
-                type: DataTypes.STRING
-            },
-            type_of_file: {
-                type: DataTypes.STRING
+            is_digital: {
+                type: DataTypes.BOOLEAN
             },
             summary: {
                 type: DataTypes.TEXT
             },
             tags: {
-                type: DataTypes.STRING
+                type: DataTypes.TEXT
             },
             subject: {
                 type: DataTypes.STRING
             },
             user_id: {
-                type: DataTypes.INTEGER
+                type: DataTypes.INTEGER,
+                foreignKey: true
             },
             publisher: {
                 type: DataTypes.STRING
             },
             image: {
                 type: DataTypes.TEXT
+            },
+            is_reading: {
+                type: DataTypes.BOOLEAN
             }
         },
         {

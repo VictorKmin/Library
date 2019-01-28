@@ -8,6 +8,7 @@ let path = require('path');
 const mainRouter = require('./routes/auth');
 const bookRouter = require('./routes/book');
 const commentRouter = require('./routes/comment');
+const searchRouter = require('./routes/search');
 
 postgres.setModels();
 
@@ -26,11 +27,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', mainRouter);
 app.use('/book', bookRouter);
 app.use('/comment', commentRouter);
+app.use('/search', searchRouter);
 
 app.listen(3001, (err) => {
-    console.log(__dirname)
     // http://patorjk.com/software/taag/#p=display&f=Electronic&t=LIBRARY -> HOW I DO THIS
-    if (!err) console.log(chalk.green(
+    if (!err) console.log(chalk.blue(
         ' ▄            ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄   ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄         ▄ \n' +
         '▐░▌          ▐░░░░░░░░░░░▌▐░░░░░░░░░░▌ ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌       ▐░▌\n' +
         '▐░▌           ▀▀▀▀█░█▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░▌       ▐░▌\n' +

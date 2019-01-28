@@ -3,8 +3,6 @@ module.exports = async (req, res) => {
     try {
         const id = req.query.id;
         if (!id) throw new Error('Chose book first');
-        // const token = req.get('Authorization');
-        // if (!token) throw new Error('No token');
         const CommentModel = DataBase.getModel('Comment');
         const User = DataBase.getModel('User');
 
@@ -24,7 +22,7 @@ module.exports = async (req, res) => {
     } catch (e) {
         console.log(e);
         res.json({
-            success: true,
+            success: false,
             message: e.message
         })
     }

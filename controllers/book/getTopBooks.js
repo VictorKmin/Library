@@ -15,7 +15,6 @@ module.exports = async (req, res) => {
     try {
         let page = req.params.page;
         let limit = req.params.limit;
-        let top5Book = [];
         let top5BooksIds = [];
         const BookModel = DataBase.getModel('Book');
         const RatingModel = DataBase.getModel('Rating');
@@ -33,14 +32,9 @@ module.exports = async (req, res) => {
         });
 
         booksInfo.forEach(book => {
-            const {book_id, avgStar, countOfVotes} = book.dataValues;
+            const {book_id} = book.dataValues;
             // Push in this array just fot search from Book table
             top5BooksIds.push(book_id);
-            top5Book.push({
-                id: book_id,
-                avgStar: +((+avgStar).toFixed(1)),
-                countOfVotes: +countOfVotes
-            })
         });
 
 
@@ -51,17 +45,18 @@ module.exports = async (req, res) => {
             }
         });
 
-        top5Book.map((bookStat) => {
+        booksInfo.map((bookStat) => {
+            bookStat.dataValues.avgStar = +(bookStat.dataValues.avgStar.slice(0, 3));
             top5.forEach(value => {
-                if (bookStat.id === value.dataValues.id) {
-                    bookStat.bookInfo = value.dataValues;
+                if (bookStat.dataValues.book_id === value.dataValues.id) {
+                    bookStat.dataValues.bookInfo = value.dataValues;
                 }
             });
         });
 
         res.json({
             success: true,
-            message: top5Book
+            message: booksInfo
         })
     } catch (e) {
         console.log(e);
