@@ -1,5 +1,5 @@
 const dataBase = require('../../dataBase').getInstance();
-const searchInserter = require('../../microservice/fullSearchInserter');
+const searchInserter = require('../../helper/fullSearchInserter');
 module.exports = (req, res) => {
     try {
         // info - userId, userName, title, author - required

@@ -42,7 +42,8 @@ module.exports = async (req, res) => {
             success: true,
             message: {
                 accessToken,
-                refreshToken
+                refreshToken,
+                id
             }
         })
     } catch (e) {

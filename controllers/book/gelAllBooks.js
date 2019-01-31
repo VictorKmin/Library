@@ -1,35 +1,19 @@
-const Sequelize = require('sequelize');
-const Op = Sequelize.Op;
-const dataBase = require('../../dataBase').getInstance();
+const DataBase = require('../../dataBase').getInstance();
+const Sequelize = require("sequelize");
+
 /**
- * This method using for searching by tag from.
- * We have tag in URL and search in book table by this tag
+ * This us very simple method using for search all books in database
  * @param req
  * @param res
- * @returns {Promise<void>}
+ * @returns booksInfo - all books from dataBase
  */
 module.exports = async (req, res) => {
     try {
-        const BookModel = dataBase.getModel('Book');
-        const RatingModel = dataBase.getModel('Rating');
-        const tag = req.params.tag;
-        if (!tag) throw new Error('Enter tag first');
+        let booksIds = [];
+        const BookModel = DataBase.getModel('Book');
+        const RatingModel = DataBase.getModel('Rating');
 
-        const bookByTag = await BookModel.findAll({
-            where: {
-                tags: {
-                    [Op.like]: `%${tag}%`
-                }
-            }
-        });
-
-        if (!bookByTag) throw new Error('Nothing found by this tag');
-
-        let bookIds = [];
-        bookByTag.forEach(value => {
-            bookIds.push(value.dataValues.id);
-        });
-
+        // SELECT bookid, AVG(star), COUNT(id) FROM rating GROUP BY bookid ORDER BY AVG(star) DESC
         const booksInfo = await RatingModel.findAll({
             attributes: [
                 'book_id',
@@ -38,14 +22,25 @@ module.exports = async (req, res) => {
             ],
             group: 'book_id',
             order: [[Sequelize.fn('AVG', Sequelize.col('star')), 'DESC']],
+        });
+
+        booksInfo.forEach(book => {
+            const {book_id} = book.dataValues;
+            // Push in this array just fot search from Book table
+            booksIds.push(book_id);
+        });
+
+
+        // SELECT * FROM book WHERE id IN booksIds
+        const top5 = await BookModel.findAll({
             where: {
-                book_id: bookIds
+                id: booksIds
             }
         });
 
         booksInfo.map((bookStat) => {
             bookStat.dataValues.avgStar = +(bookStat.dataValues.avgStar.slice(0, 3));
-            bookByTag.forEach(value => {
+            top5.forEach(value => {
                 if (bookStat.dataValues.book_id === value.dataValues.id) {
                     bookStat.dataValues.bookInfo = value.dataValues;
                 }

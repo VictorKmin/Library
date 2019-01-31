@@ -1,0 +1,1 @@
+module.exports.MILLISECONDS_ID_DAY = 86400000;

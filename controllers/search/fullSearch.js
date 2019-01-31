@@ -1,6 +1,19 @@
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const dataBase = require('../../dataBase').getInstance();
+
+/**
+ * This method using just for searching bu one field.
+ * Best practice will be using something like elastic search.
+ * But this method is useful too.
+ * I have table with 2 fields. First field is book Id.
+ * Second is all book subscription.
+ * I search by this one field, and have book id.
+ * Then i find book and rating bu this id
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
 module.exports = async (req, res) => {
     try {
         const SearchModel = dataBase.getModel('FullSearch');
@@ -9,10 +22,6 @@ module.exports = async (req, res) => {
 
         const keyWord = req.query.word;
         if (!keyWord) throw new Error('Something wrong with URL');
-
-        console.log('_________________________');
-        console.log(keyWord);
-        console.log('_________________________');
 
         const booksValues = await SearchModel.findAll({
             attributes: ['book_id'],
@@ -59,7 +68,7 @@ module.exports = async (req, res) => {
 
         res.json({
             success: true,
-            message: books
+            message: booksInfo
         })
     } catch (e) {
         console.log(e);

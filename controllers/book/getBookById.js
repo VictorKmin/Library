@@ -41,11 +41,13 @@ module.exports = async (req, res) => {
                 ]
             });
             book.dataValues.backTime = whoReadBook.dataValues.back_time;
-            book.dataValues.user = whoReadBook.dataValues.User.name
+            book.dataValues.userName = whoReadBook.dataValues.User.name;
+            book.dataValues.userIdWhoRead = whoReadBook.dataValues.user_id
         }
 
         let countOfComments;
 
+        // Maybe bad small. Sorry ...
         if (!comments[0]) {
             countOfComments = 0;
         } else {

@@ -20,6 +20,9 @@ module.exports = (sequelize, DataTypes) => {
             },
             back_time: {
                 type: DataTypes.DATE
+            },
+            is_delaying: {
+                type: DataTypes.BOOLEAN
             }
         },
         {
