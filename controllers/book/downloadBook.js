@@ -24,8 +24,6 @@ module.exports = async (req, res) => {
 
         if (!bookInfo) throw new Error('No files');
 
-        console.log(chalk.magenta(`User ${id} download book ${bookId}`))
-
         res.json({
             success: true,
             message: bookInfo

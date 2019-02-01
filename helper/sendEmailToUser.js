@@ -1,19 +1,25 @@
 const mailer = require('nodemailer');
-const dataBase = require('../dataBase/index').getInstance();
+const chalk = require('chalk');
+const NOTIFICATION_EMAIL = require('../config/mail').NOTIFICATION_EMAIL;
+const NOTIFICATION_PASSWORD = require('../config/mail').NOTIFICATION_PASSWORD;
+const HOST = require('../constants/values').HOST;
 module.exports = (body) => {
-    const UserModel = dataBase.getModel('User');
-    const {book, email} = body;
+    const {title, email, name, book_id} = body;
 
-    if (!book || !email) throw new Error('Email or book title is empty');
-    const msg = `Please return book ${book}`;
+    if (!title || !email) throw new Error('Email or book title is empty');
+    const msg =
+        `Dear ${name} <br>  
+         Please return book ${title} <br>
+         You can use link <b> ${HOST}/book/${book_id} </b> 
+         If you not return book until 7 days this email will be sanded to HR`;
 
     let transporter = mailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
         secure: false,
         auth: {
-            // user: WORK_EMAIL,
-            // pass: WOR_PASS
+            user: NOTIFICATION_EMAIL,
+            pass: NOTIFICATION_PASSWORD
         }
     });
 
@@ -27,6 +33,7 @@ module.exports = (body) => {
 
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) throw new Error(error.message);
-        console.log(`Mail to ${email} send successful`);
+        console.log(chalk.bgCyan.black(`Mail to ${email} send successful`));
+        console.log(info);
     });
 };

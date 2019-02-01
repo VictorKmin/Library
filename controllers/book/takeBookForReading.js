@@ -2,6 +2,7 @@ const chalk = require('chalk');
 const DataBase = require('../../dataBase').getInstance();
 const tokenVerifiactor = require('../../helper/tokenVerificator');
 const secret = require('../../config/secrets').secret;
+let MILLISECONDS_ID_DAY = require('../../constants/values').MILLISECONDS_ID_DAY;
 
 module.exports = async (req, res) => {
     try {
@@ -12,7 +13,7 @@ module.exports = async (req, res) => {
         const {id} = tokenVerifiactor(token, secret);
         const bookId = req.params.id;
 
-        const backTime = new Date(Date.now() + 86400000 * 31).toISOString();
+        const backTime = new Date(Date.now() + MILLISECONDS_ID_DAY * 31).toISOString();
 
         await BookModel.update({
             is_reading: true,

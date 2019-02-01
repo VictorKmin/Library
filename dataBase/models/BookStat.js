@@ -23,7 +23,10 @@ module.exports = (sequelize, DataTypes) => {
             },
             is_delaying: {
                 type: DataTypes.BOOLEAN
-            }
+            },
+            notification_count: {
+                type: DataTypes.INTEGER,
+            },
         },
         {
             tableName: 'bookstat',

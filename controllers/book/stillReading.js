@@ -21,7 +21,8 @@ module.exports = async (req, res) => {
 
         await BookStatModel.update({
             back_time: newDate,
-            is_delaying: true
+            is_delaying: true,
+            notification_count: 0
         }, {
             where: {
                 book_id: bookId,
