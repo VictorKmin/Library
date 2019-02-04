@@ -5,6 +5,7 @@ const postgres = require('./dataBase').getInstance();
 const path = require('path');
 const {fork} = require('child_process');
 const {resolve: resolvePath} = require('path');
+const bodyParser = require('body-parser');
 
 const mainRouter = require('./routes/auth');
 const bookRouter = require('./routes/book');
@@ -13,8 +14,8 @@ const searchRouter = require('./routes/search');
 
 postgres.setModels();
 
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(bodyParser.json({limit: '150mb'}));
+app.use(bodyParser.urlencoded({limit: '150mb', extended: true}));
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");

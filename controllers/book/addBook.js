@@ -1,9 +1,11 @@
+
 const dataBase = require('../../dataBase').getInstance();
 const searchInserter = require('../../helper/fullSearchInserter');
 module.exports = (req, res) => {
     try {
 
         console.log(req.body);
+        console.log(req.file);
 
         // // info - userId, userName, title, author - required
         // // tags?,subject?, publisher?, isDigital?, typeOfFile?, typeOfContent?, summary?
