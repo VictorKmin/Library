@@ -17,7 +17,6 @@ module.exports = (req, res) => {
         //
         // searchInserter(id, Object.values(info));
 
-
         res.json({
             success: true,
             message: 'OK'
