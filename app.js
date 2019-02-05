@@ -14,6 +14,7 @@ const searchRouter = require('./routes/search');
 
 postgres.setModels();
 
+// Limit to file uploads
 app.use(bodyParser.json({limit: '150mb'}));
 app.use(bodyParser.urlencoded({limit: '150mb', extended: true}));
 

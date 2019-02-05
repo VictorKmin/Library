@@ -13,43 +13,43 @@ module.exports = async (req, res) => {
         const BookModel = DataBase.getModel('Book');
         const RatingModel = DataBase.getModel('Rating');
 
+        // SELECT * FROM book WHERE id IN booksIds
+        const allBooks = await BookModel.findAll({
+            order: ['title'],
+
+        });
+
+        allBooks.forEach(book => {
+            const {id} = book.dataValues;
+            // Push in this array just fot search from Book table
+            booksIds.push(id);
+        });
+
         // SELECT bookid, AVG(star), COUNT(id) FROM rating GROUP BY bookid ORDER BY AVG(star) DESC
-        const booksInfo = await RatingModel.findAll({
+        const ratingInfo = await RatingModel.findAll({
             attributes: [
                 'book_id',
                 [Sequelize.fn('AVG', Sequelize.col('star')), 'avgStar'],
                 [Sequelize.fn('COUNT', Sequelize.col('id')), 'countOfVotes']
             ],
             group: 'book_id',
-            order: [[Sequelize.fn('AVG', Sequelize.col('star')), 'DESC']],
-        });
-
-        booksInfo.forEach(book => {
-            const {book_id} = book.dataValues;
-            // Push in this array just fot search from Book table
-            booksIds.push(book_id);
-        });
-
-
-        // SELECT * FROM book WHERE id IN booksIds
-        const top5 = await BookModel.findAll({
             where: {
-                id: booksIds
+                book_id: booksIds
             }
         });
 
-        booksInfo.map((bookStat) => {
-            bookStat.dataValues.avgStar = +(bookStat.dataValues.avgStar.slice(0, 3));
-            top5.forEach(value => {
-                if (bookStat.dataValues.book_id === value.dataValues.id) {
-                    bookStat.dataValues.bookInfo = value.dataValues;
+        allBooks.map((bookStat) => {
+            ratingInfo.forEach(rating => {
+                if (bookStat.dataValues.id === rating.dataValues.book_id) {
+                    bookStat.dataValues.countOfVotes = rating.dataValues.countOfVotes;
+                    bookStat.dataValues.avgStar = +(rating.dataValues.avgStar.slice(0, 3));
                 }
             });
         });
 
         res.json({
             success: true,
-            message: booksInfo
+            message: allBooks
         })
     } catch (e) {
         console.log(e);
