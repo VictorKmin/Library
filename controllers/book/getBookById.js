@@ -29,9 +29,6 @@ module.exports = async (req, res) => {
         if (book.dataValues.is_reading) {
             // SELECT * FROM bookstat b JOIN users u on b.user_id = u.id WHERE b.book_id = id ORDER BY b.id;
             const whoReadBook = await BookStatModel.findOne({
-                // attributes: [
-                //     "User.name", "BookStat.back_time"
-                // ],
                 where: {
                     book_id: id
                 },

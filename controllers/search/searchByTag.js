@@ -12,7 +12,7 @@ module.exports = async (req, res) => {
     try {
         const BookModel = dataBase.getModel('Book');
         const RatingModel = dataBase.getModel('Rating');
-        const tag = req.params.tag;
+        const tag = req.params.tag.toLowerCase();
         if (!tag) throw new Error('Enter tag first');
 
         const bookByTag = await BookModel.findAll({
@@ -23,44 +23,45 @@ module.exports = async (req, res) => {
             }
         });
 
-        if (!bookByTag) throw new Error('Nothing found by this tag');
+        if (!bookByTag) {
+            let bookIds = [];
+            bookByTag.forEach(value => {
+                bookIds.push(value.dataValues.id);
+            });
 
-        let bookIds = [];
-        bookByTag.forEach(value => {
-            bookIds.push(value.dataValues.id);
-        });
-
-        const booksInfo = await RatingModel.findAll({
-            attributes: [
-                'book_id',
-                [Sequelize.fn('AVG', Sequelize.col('star')), 'avgStar'],
-                [Sequelize.fn('COUNT', Sequelize.col('id')), 'countOfVotes']
-            ],
-            group: 'book_id',
-            order: [[Sequelize.fn('AVG', Sequelize.col('star')), 'DESC']],
-            where: {
-                book_id: bookIds
-            }
-        });
-
-        bookByTag.map((bookStat) => {
-            booksInfo.forEach(value => {
-                if (bookStat.dataValues.id === value.dataValues.book_id) {
-                    bookStat.dataValues.countOfVotes = value.dataValues.countOfVotes;
-                    bookStat.dataValues.avgStar = +(value.dataValues.avgStar.slice(0, 3));
+            const booksInfo = await RatingModel.findAll({
+                attributes: [
+                    'book_id',
+                    [Sequelize.fn('AVG', Sequelize.col('star')), 'avgStar'],
+                    [Sequelize.fn('COUNT', Sequelize.col('id')), 'countOfVotes']
+                ],
+                group: 'book_id',
+                order: [[Sequelize.fn('AVG', Sequelize.col('star')), 'DESC']],
+                where: {
+                    book_id: bookIds
                 }
             });
-        });
 
+            bookByTag.map((bookStat) => {
+                booksInfo.forEach(value => {
+                    if (bookStat.dataValues.id === value.dataValues.book_id) {
+                        bookStat.dataValues.countOfVotes = value.dataValues.countOfVotes;
+                        bookStat.dataValues.avgStar = +(value.dataValues.avgStar.slice(0, 3));
+                    }
+                });
+            });
+        }
         res.json({
             success: true,
             message: bookByTag
         })
     } catch (e) {
         console.log(e);
-        res.json({
-            success: false,
-            message: e.message
-        })
+        res
+            .status(400)
+            .json({
+                success: false,
+                message: e.message
+            })
     }
 };

@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
             title,
             author,
             summary,
-            tags,
+            tags: tags.toLowerCase(),
             subject,
             user_id: id,
             publisher,
@@ -41,9 +41,10 @@ module.exports = async (req, res) => {
         })
     } catch (e) {
         console.log(e);
-        res.json({
-            success: false,
-            message: e.message
-        })
+        res.statusCode(401)
+            .json({
+                success: false,
+                message: e.message
+            })
     }
 };

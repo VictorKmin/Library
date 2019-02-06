@@ -21,7 +21,7 @@ module.exports = async (id, bookInfo, fileInfo) => {
 
     if (fileInfo && typeOfBook === 'digital') {
         const fileName = `/files/${fileInfo.filename}`;
-        typeOfFile = fileInfo.filename.split('.')[1];
+        typeOfFile = fileInfo.filename.split('.').pop();
         if (TEXT.includes(fileInfo.mimetype)) typeOfContent = 'text';
         if (AUDIO.includes(fileInfo.mimetype)) typeOfContent = 'audio';
         if (VIDEO.includes(fileInfo.mimetype)) typeOfContent = 'video';
@@ -38,7 +38,7 @@ module.exports = async (id, bookInfo, fileInfo) => {
     const searchString = `${title} ${author} ${summary} ${subject} ${tags} ${typeOfBook} ${typeOfFile} ${typeOfContent}`;
     await SearchModel.create({
         book_id: id,
-        description: searchString
+        description: searchString.toLowerCase()
     });
     console.log(chalk.bgYellow.magenta('FULL SEARCH INSERTED'))
 

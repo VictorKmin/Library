@@ -11,12 +11,13 @@ const mainRouter = require('./routes/auth');
 const bookRouter = require('./routes/book');
 const commentRouter = require('./routes/comment');
 const searchRouter = require('./routes/search');
+const userRouter = require('./routes/user');
 
 postgres.setModels();
 
 // Limit to file uploads
-app.use(bodyParser.json({limit: '150mb'}));
-app.use(bodyParser.urlencoded({limit: '150mb', extended: true}));
+app.use(bodyParser.json({limit: '300mb'}));
+app.use(bodyParser.urlencoded({limit: '300mb', extended: true}));
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -31,6 +32,7 @@ app.use('/', mainRouter);
 app.use('/book', bookRouter);
 app.use('/comment', commentRouter);
 app.use('/search', searchRouter);
+app.use('/user', userRouter);
 
 /**
  * This child process using for check is user return book to office

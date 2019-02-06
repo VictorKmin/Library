@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
 
         if (!user) throw new Error('Wrong email or password');
 
-        const {id} = user.dataValues;
+        const {id, role} = user.dataValues;
         let isTokenPresent = await TokenModel.findOne({
             where: {
                 user_id: id
@@ -29,8 +29,7 @@ module.exports = async (req, res) => {
         const hashedPass = hasher(password);
         console.log(chalk.green(hashedPass));
 
-        let {accessToken, refreshToken} = tokenizer(id, email);
-        if (!accessToken || !refreshToken) throw new Error('Token is not created');
+        let {accessToken, refreshToken} = tokenizer(id, email, role);
         console.log(chalk.blue(`Pair of token is created. User with mail ${email} logged`));
 
         await TokenModel.create({
@@ -43,15 +42,16 @@ module.exports = async (req, res) => {
             message: {
                 accessToken,
                 refreshToken,
-                id
             }
         })
     } catch (e) {
         console.error(e);
-        res.json({
-            success: false,
-            message: e.message
-        })
+        res
+            .status(401)
+            .json({
+                success: false,
+                message: e.message
+            })
     }
 };
 

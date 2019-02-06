@@ -23,7 +23,7 @@ const storage = multer.diskStorage({
     filename: function (req, file, cb) {
         console.log(file);
         // Build name like 1549350785625.jpg
-        cb(null, new Date().getTime() + '.' + file.originalname.split('.')[1])
+        cb(null, new Date().getTime() + '.' + file.originalname.split('.').pop())
     }
 });
 const upload = multer({storage});

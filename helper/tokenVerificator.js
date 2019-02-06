@@ -9,6 +9,7 @@ module.exports = (token, secretWorld) => {
         user = {
             id: decoded.id,
             email: decoded.email,
+            role: decoded.role
         }
     });
     console.log(user);
