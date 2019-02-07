@@ -12,8 +12,7 @@ const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         if (IMAGES.includes(file.mimetype)) {
             cb(null, 'public/images')
-        }
-        else if (AUDIO.includes(file.mimetype) || TEXT.includes(file.mimetype) || VIDEO.includes(file.mimetype)) {
+        } else if (AUDIO.includes(file.mimetype) || TEXT.includes(file.mimetype) || VIDEO.includes(file.mimetype)) {
             cb(null, 'public/files')
         } else {
             cb('UNKNOWN FILE', null);
@@ -28,14 +27,17 @@ const storage = multer.diskStorage({
 });
 const upload = multer({storage});
 
-let topBooks = require('../controllers/book/getTopBooks');
-let getBookById = require('../controllers/book/getBookById');
-let readBook = require('../controllers/book/takeBookForReading');
-let downloadBook = require('../controllers/book/downloadBook');
-let addBook = require('../controllers/book/addBook');
-let gelAllBooks = require('../controllers/book/gelAllBooks');
-let stillReading = require('../controllers/book/stillReading');
-let returnBook = require('../controllers/book/returnBook');
+const topBooks = require('../controllers/book/getTopBooks');
+const getBookById = require('../controllers/book/getBookById');
+const readBook = require('../controllers/book/takeBookForReading');
+const downloadBook = require('../controllers/book/downloadBook');
+const addBook = require('../controllers/book/addBook');
+const gelAllBooks = require('../controllers/book/gelAllBooks');
+const stillReading = require('../controllers/book/stillReading');
+const returnBook = require('../controllers/book/returnBook');
+//ADMIN CONTROLLERS
+const deleteBook = require('../controllers/book/deleteBook');
+const updateBook = require('../controllers/book/updateBook');
 
 router.get('/top/:page/:limit', topBooks);
 router.get('/:id', getBookById);
@@ -47,6 +49,9 @@ router.post('/', upload.fields([{name: 'photo', maxCount: 1}, {name: 'file', max
 router.get('/', gelAllBooks);
 router.patch('/', stillReading);
 router.delete('/return/:id', returnBook);
+//ADMIN ROUTES
+router.delete('/:id', deleteBook);
+router.put('/:id', upload.fields([{name: 'photo', maxCount: 1}, {name: 'file', maxCount: 1}]), updateBook);
 
 module.exports = router;
 

@@ -1,6 +1,6 @@
 const chalk = require('chalk');
 const dataBase = require('../../dataBase').getInstance();
-const insertAuxiliary = require('../../helper/insertAuxiliary');
+const insertAuxiliary = require('./bookHelpers/insertAuxiliary');
 const tokenVerifiactor = require('../../helper/tokenVerificator');
 const secret = require('../../config/secrets').secret;
 

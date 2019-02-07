@@ -6,7 +6,7 @@ module.exports = async (req, res) => {
         const CommentModel = DataBase.getModel('Comment');
         const token = req.get('Authorization');
         if (!token) throw new Error('No token');
-        const {id, email} = tokenVerifiactor(token, secret);
+        const {id} = tokenVerifiactor(token, secret);
         console.log(id);
         const {bookId, comment} = req.body;
 

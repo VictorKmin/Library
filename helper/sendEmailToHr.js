@@ -29,7 +29,7 @@ module.exports = (body) => {
         html: msg
     };
 
-    transporter.sendMail(mailOptions, (error, info) => {
+    transporter.sendMail(mailOptions, (error) => {
         if (error) throw new Error(error.message);
         console.log(chalk.bgCyan.black(`Mail to HR send successful`));
     });

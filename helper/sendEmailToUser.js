@@ -2,7 +2,7 @@ const mailer = require('nodemailer');
 const chalk = require('chalk');
 const NOTIFICATION_EMAIL = require('../config/mail').NOTIFICATION_EMAIL;
 const NOTIFICATION_PASSWORD = require('../config/mail').NOTIFICATION_PASSWORD;
-const HOST = require('../constants/values').HOST;
+const ANGULAR_IP = require('../constants/values').ANGULAR_IP;
 module.exports = (body) => {
     const {title, email, name, book_id} = body;
 
@@ -10,7 +10,7 @@ module.exports = (body) => {
     const msg =
         `Dear ${name} <br>  
          Please return book ${title} <br>
-         You can use link <b> ${HOST}/book/${book_id} </b> 
+         You can use link <b> ${ANGULAR_IP}/book/${book_id} </b> 
          If you not return book until 7 days this email will be sanded to HR`;
 
     let transporter = mailer.createTransport({

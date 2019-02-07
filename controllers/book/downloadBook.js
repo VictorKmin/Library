@@ -1,4 +1,3 @@
-const chalk = require('chalk');
 const DataBase = require('../../dataBase').getInstance();
 const tokenVerifiactor = require('../../helper/tokenVerificator');
 const secret = require('../../config/secrets').secret;
@@ -9,7 +8,7 @@ module.exports = async (req, res) => {
         const DigitalModel = DataBase.getModel('DigitalInfo');
         const token = req.get('Authorization');
         if (!token) throw new Error('No token');
-        const {id} = tokenVerifiactor(token, secret);
+        tokenVerifiactor(token, secret);
         const bookId = req.params.id;
         if (!bookId) throw new Error('Please select book first');
         const isBookPresent = await BookModel.findByPk(bookId);
