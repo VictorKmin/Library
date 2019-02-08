@@ -12,6 +12,7 @@ const bookRouter = require('./routes/book');
 const commentRouter = require('./routes/comment');
 const searchRouter = require('./routes/search');
 const userRouter = require('./routes/user');
+const activityRouter = require('./routes/activity');
 
 postgres.setModels();
 
@@ -33,6 +34,7 @@ app.use('/book', bookRouter);
 app.use('/comment', commentRouter);
 app.use('/search', searchRouter);
 app.use('/user', userRouter);
+app.use('/activity', activityRouter);
 
 /**
  * This child process using for check is user return book to office

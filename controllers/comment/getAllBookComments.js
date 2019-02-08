@@ -12,6 +12,7 @@ module.exports = async (req, res) => {
             where: {
                 book_id: id
             },
+            order: [["created_at", 'DESC']],
             include: [User]
         });
 

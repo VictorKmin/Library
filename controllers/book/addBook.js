@@ -28,7 +28,8 @@ module.exports = async (req, res) => {
             publisher,
             image: imgName,
             is_reading: false,
-            is_digital: isDigital
+            is_digital: isDigital,
+            created_at: new Date().toISOString(),
         });
         const {id: bookId} = insertedBook.dataValues;
         console.log(chalk.bgYellow.magenta(`BOOK ${title} INSERTED`));

@@ -13,6 +13,8 @@ module.exports = async (req, res) => {
         const RatingModel = dataBase.getModel('Rating');
         const SearchModel = dataBase.getModel('FullSearch');
         const DigitalModel = dataBase.getModel('DigitalInfo');
+        const ReadingActivityModel = dataBase.getModel('ReadingActivity');
+        const CommentActivityModel = dataBase.getModel('CommentActivity');
         const bookId = req.params.id;
         if (!bookId) throw new Error('Something wrong with URL');
         const token = req.get('Authorization');
@@ -55,6 +57,19 @@ module.exports = async (req, res) => {
             }
         });
 
+        // delete all activity of this book
+        await ReadingActivityModel.destroy({
+            where: {
+                book_id: bookId
+            }
+        });
+
+        await CommentActivityModel.destroy({
+            where: {
+                book_id: bookId
+            }
+        });
+
         // Then we need to delete files if book is digital
         if (is_digital) {
             const digitalInfo = await DigitalModel.findOne({
@@ -69,7 +84,7 @@ module.exports = async (req, res) => {
                 const filePath = path.normalize(`${MAIN_PATH}/public/${location}`);
 
                 fs.unlink(`${filePath}`, err => {
-                    if (err) throw new Error(err.message)
+                    if (err) console.log(err)
                 });
 
                 await DigitalModel.destroy({
@@ -84,7 +99,7 @@ module.exports = async (req, res) => {
         const imgPath = path.normalize(`${MAIN_PATH}/public/${image}`);
 
         fs.unlink(`${imgPath}`, err => {
-            if (err) throw new Error(err.message)
+            if (err) console.log(err)
         });
 
         await BookModel.destroy({

@@ -15,6 +15,9 @@ module.exports = (sequelize, DataTypes) => {
             },
             star: {
                 type: DataTypes.INTEGER
+            },
+            created_at: {
+                type: DataTypes.DATE
             }
         },
         {

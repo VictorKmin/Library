@@ -12,7 +12,7 @@ module.exports = async (req, res) => {
 
         // SELECT * FROM book WHERE id = id;
         const book = await BookModel.findByPk(id);
-        if (!book) throw new Error('We have not this book in DataBase');
+        if (!book) throw new Error('Book not found');
 
         // SELECT COUNT("comment") FROM comments WHERE bookid = id GROUP BY bookid;
         const comments = await CommentModel.findAll({

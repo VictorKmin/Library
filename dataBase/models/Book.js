@@ -37,6 +37,9 @@ module.exports = (sequelize, DataTypes) => {
             },
             is_reading: {
                 type: DataTypes.BOOLEAN
+            },
+            created_at: {
+                type: DataTypes.DATE
             }
         },
         {

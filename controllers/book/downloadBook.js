@@ -21,8 +21,6 @@ module.exports = async (req, res) => {
             }
         });
 
-        if (!bookInfo) throw new Error('No files');
-
         res.json({
             success: true,
             message: bookInfo

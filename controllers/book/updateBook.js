@@ -49,6 +49,8 @@ module.exports = async (req, res) => {
             }
         });
 
+        if (!bookToUpdate) throw new Error('Book not found');
+
         let {
             title: oldTitle,
             author: oldAuthor,
@@ -73,11 +75,23 @@ module.exports = async (req, res) => {
             // DELETE OLD BOOK PHOTO
             const filePath = path.normalize(`${MAIN_PATH}/public/${image}`);
             fs.unlink(`${filePath}`, err => {
-                if (err) throw new Error(err.message)
+                console.log(err);
             });
         } else {
             photo = image;
         }
+
+        // build object with new info to update another tables
+        const infoToUpdate = {
+            title: newTitle,
+            author: newAuthor,
+            summary: newSummary,
+            subject: newSubject,
+            tags: newTags,
+            is_digital
+        };
+        //Update digital info and full search info with new values
+        updateAuxiliary(bookId, infoToUpdate, fileInfo);
 
         await BookModel.update({
             title: newTitle,
@@ -93,18 +107,6 @@ module.exports = async (req, res) => {
                 id: bookId,
             }
         });
-
-        // build object with new info to update another tables
-        const infoToUpdate = {
-            title: newTitle,
-            author: newAuthor,
-            summary: newSummary,
-            subject: newSubject,
-            tags: newTags,
-            is_digital
-        };
-        //Update digital info and full search info with new values
-        updateAuxiliary(bookId, infoToUpdate, fileInfo);
 
         console.log(chalk.bgMagenta(`Book updated successful`));
 
