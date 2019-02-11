@@ -8,9 +8,10 @@ module.exports = async (req, res) => {
     try {
         const BookModel = DataBase.getModel('Book');
         const BookStatModel = DataBase.getModel('BookStat');
+        const ReaddingActvityModel = dataBase.getModel('ReadingActivity');
         const token = req.get('Authorization');
         if (!token) throw new Error('No token');
-        const {id} = tokenVerifiactor(token, secret);
+        const {id: userId} = tokenVerifiactor(token, secret);
         const bookId = req.params.id;
 
         const backTime = new Date(Date.now() + MILLISECONDS_ID_DAY * 31).toISOString();
@@ -25,10 +26,19 @@ module.exports = async (req, res) => {
 
         await BookStatModel.create({
             book_id: bookId,
-            user_id: id,
+            user_id: userId,
             get_time: new Date().toISOString(),
             back_time: backTime
         });
+
+        // Insert record into statistic activity table
+        await ReaddingActvityModel.create({
+            user_id: userId,
+            book_id: bookId,
+            take_read: true,
+            created_at: new Date().toISOString()
+        });
+
         console.log(chalk.magenta(`User ${id} get book ${bookId} for reading`));
         res.json({
             success: true,

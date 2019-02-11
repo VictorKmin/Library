@@ -8,7 +8,8 @@ module.exports = (sequelize, DataTypes) => {
                 autoIncrement: true
             },
             user_id: {
-                type: DataTypes.INTEGER
+                type: DataTypes.INTEGER,
+                foreignKey: true
             },
             book_id: {
                 type: DataTypes.INTEGER
@@ -25,7 +26,9 @@ module.exports = (sequelize, DataTypes) => {
             timestamps: false
         });
 
-    const Book = sequelize.import('./Book.js');
-    Rating.belongsTo(Book, {foreignKey: 'book_id'});
+    // const Book = sequelize.import('./Book.js');
+    // Rating.belongsTo(Book, {foreignKey: 'book_id'});
+    const User = sequelize.import('./User.js');
+    Rating.belongsTo(User, {foreignKey: 'user_id'});
     return Rating
 };

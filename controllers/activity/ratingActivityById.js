@@ -6,18 +6,18 @@ module.exports = async (req, res) => {
     try {
         const bookId = req.params.id;
         if (!bookId) throw new Error('Bad request');
-        const ReadingActivityModel = dataBase.getModel('ReadingActivity');
+        const RatingModel = dataBase.getModel('Rating');
         const UserModel = dataBase.getModel('User');
         const token = req.get('Authorization');
         if (!token) throw new Error('Not authorized');
         const {role} = tokenVerifiactor(token, secret);
         if (role !== 1) throw new Error('Bad credentials');
 
-        let readingActivity = await ReadingActivityModel.findAll({
+        let readingActivity = await RatingModel.findAll({
             where: {
                 book_id: bookId
             },
-            include: [UserModel],
+            include: [UserModel]
         });
 
         res.json({

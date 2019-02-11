@@ -1,12 +1,18 @@
 const chalk = require('chalk');
 const dataBase = require('../../dataBase').getInstance();
+const tokenVerifiactor = require('../../helper/tokenVerificator');
+const secret = require('../../config/secrets').secret;
 const MILLISECONDS_ID_DAY = require('../../constants/values').MILLISECONDS_ID_DAY;
 
 module.exports = async (req, res) => {
     try {
-        const {bookId, userId} = req.body;
-        if (!bookId || !userId) throw new Error('Something wrong with body');
         const BookStatModel = dataBase.getModel('BookStat');
+        const ReaddingActvityModel = dataBase.getModel('ReadingActivity');
+        const {bookId} = req.body;
+        if (!bookId) throw new Error('Bad request');
+        const token = req.get('Authorization');
+        if (!token) throw new Error('No token');
+        const {id: userId} = tokenVerifiactor(token, secret);
 
         const book = await BookStatModel.findOne({
             where: {
@@ -30,7 +36,15 @@ module.exports = async (req, res) => {
             }
         });
 
-        console.log(chalk.magenta(`User with id ${userId} still reading book ${bookId}`));
+        // Insert record into statistic activity table
+        await ReaddingActvityModel.create({
+            user_id: userId,
+            book_id: bookId,
+            continue_read: true,
+            created_at: new Date().toISOString()
+        });
+
+        console.log(chalk.magenta(`User with id ${id} still reading book ${bookId}`));
 
         res.json({
             success: true,

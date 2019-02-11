@@ -1,11 +1,12 @@
 const dataBase = require('../../dataBase').getInstance();
 const tokenVerifiactor = require('../../helper/tokenVerificator');
 const secret = require('../../config/secrets').secret;
+const Sequelize = require("sequelize");
 
 module.exports = async (req, res) => {
     try {
-        const bookId = req.params.id;
-        if (!bookId) throw new Error('Bad request');
+        const limit = req.params.limit;
+        if (!limit) throw new Error('Bad request');
         const ReadingActivityModel = dataBase.getModel('ReadingActivity');
         const UserModel = dataBase.getModel('User');
         const token = req.get('Authorization');
@@ -13,11 +14,17 @@ module.exports = async (req, res) => {
         const {role} = tokenVerifiactor(token, secret);
         if (role !== 1) throw new Error('Bad credentials');
 
-        let readingActivity = await ReadingActivityModel.findAll({
-            where: {
-                book_id: bookId
-            },
-            include: [UserModel],
+        const readingActivity = await ReadingActivityModel.findAll({
+            attributes: [
+                [Sequelize.fn('COUNT', Sequelize.col('ReadingActivity.id')), 'countOfRead']
+            ],
+            group: ["User.id"],
+            order: [[Sequelize.fn('COUNT', Sequelize.col('ReadingActivity.id')), 'DESC']],
+            limit,
+            include: [{
+                model: UserModel,
+                attributes: ['name']
+            }],
         });
 
         res.json({

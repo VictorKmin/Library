@@ -1,4 +1,4 @@
-const DataBase = require('../../dataBase').getInstance();
+const dataBase = require('../../dataBase').getInstance();
 const tokenVerifiactor = require('../../helper/tokenVerificator');
 const secret = require('../../config/secrets').secret;
 
@@ -12,18 +12,18 @@ const secret = require('../../config/secrets').secret;
  */
 module.exports = async (req, res) => {
     try {
-        const CommentModel = DataBase.getModel('Comment');
+        const CommentModel = dataBase.getModel('Comment');
         const CommentActivityModel = dataBase.getModel('CommentActivity');
         const token = req.get('Authorization');
         if (!token) throw new Error('No token');
-        const id = req.params.id;
+        const commentId = req.params.id;
         if (!id) throw new Error('Bad request');
         const {role} = tokenVerifiactor(token, secret);
         if (role !== 1) throw new Error('You are not admin');
 
         const isCommentPresent = await CommentModel.findOne({
             where: {
-                id
+                id: commentId
             }
         });
 
@@ -31,13 +31,13 @@ module.exports = async (req, res) => {
 
         await CommentActivityModel.destroy({
             where: {
-                comment_id: id
+                comment_id: commentId
             }
         });
 
         await CommentModel.destroy({
             where: {
-                id
+                id: commentId
             }
         });
 
