@@ -20,7 +20,7 @@ postgres.setModels();
 app.use(bodyParser.json({limit: '300mb'}));
 app.use(bodyParser.urlencoded({limit: '300mb', extended: true}));
 
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Credentials", true);
     res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE,PATCH");

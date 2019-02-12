@@ -2,6 +2,13 @@ const dataBase = require('../../dataBase').getInstance();
 const tokenVerifiactor = require('../../helper/tokenVerificator');
 const secret = require('../../config/secrets').secret;
 
+/**
+ * This method using for get all comment of book
+ * We get info about add new comment and update old comments.
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
 module.exports = async (req, res) => {
     try {
         const bookId = req.params.id;
@@ -13,16 +20,21 @@ module.exports = async (req, res) => {
         const {role} = tokenVerifiactor(token, secret);
         if (role !== 1) throw new Error('Bad credentials');
 
-        let readingActivity = await CommentModel.findAll({
+        // SELECT * FROM reading_activity JOIN user ON ***** ORDER BY created_at DESC
+        let commentActivity = await CommentModel.findAll({
             where: {
                 book_id: bookId
             },
-            include: [UserModel]
+            include: [{
+                model: UserModel,
+                attributes: ['name']
+            }],
+            order: [['created_at', 'DESC']]
         });
 
         res.json({
             success: true,
-            message: readingActivity
+            message: commentActivity
         })
     } catch (e) {
         console.log(e);

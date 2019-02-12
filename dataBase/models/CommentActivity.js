@@ -9,13 +9,14 @@ module.exports = (sequelize, DataTypes) => {
             },
             book_id: {
                 type: DataTypes.INTEGER,
-            },
-            comment_id: {
-                type: DataTypes.INTEGER,
                 foreignKey: true
             },
-            user_id: {
+            comment_id: {
                 type: DataTypes.INTEGER
+            },
+            user_id: {
+                type: DataTypes.INTEGER,
+                foreignKey: true
             },
             is_create: {
                 type: DataTypes.BOOLEAN
@@ -39,6 +40,9 @@ module.exports = (sequelize, DataTypes) => {
         });
 
     const User = sequelize.import('./User.js');
+    const Book = sequelize.import('./Book.js');
     CommentActivity.belongsTo(User, {foreignKey: 'user_id'});
+    CommentActivity.belongsTo(Book, {foreignKey: 'book_id'});
+
     return CommentActivity
 };

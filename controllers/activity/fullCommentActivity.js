@@ -3,37 +3,38 @@ const tokenVerifiactor = require('../../helper/tokenVerificator');
 const secret = require('../../config/secrets').secret;
 
 /**
- * This method for search rating history of book.
- * Get BookId from params req.param and search all rating of this book
+ * Method for get all comment activity.
+ * When we select info from data base we join it to book and user model
+ * For get full info about action
  * @param req
  * @param res
  * @returns {Promise<void>}
  */
 module.exports = async (req, res) => {
     try {
-        const bookId = req.params.id;
-        if (!bookId) throw new Error('Bad request');
-        const RatingModel = dataBase.getModel('Rating');
+        const CommentActivityModel = dataBase.getModel('CommentActivity');
         const UserModel = dataBase.getModel('User');
+        const BookModel = dataBase.getModel('Book');
         const token = req.get('Authorization');
         if (!token) throw new Error('Not authorized');
         const {role} = tokenVerifiactor(token, secret);
         if (role !== 1) throw new Error('Bad credentials');
 
-        let ratingActivity = await RatingModel.findAll({
-            where: {
-                book_id: bookId
-            },
+        // SELECT * FROM comment_activity JOIN user JOIN book ON ***** ORDER BY created_at DESC
+        let readingActivity = await CommentActivityModel.findAll({
             include: [{
                 model: UserModel,
                 attributes: ['name']
+            }, {
+                model: BookModel,
+                attributes: ['title']
             }],
             order: [['created_at', 'DESC']]
         });
 
         res.json({
             success: true,
-            message: ratingActivity
+            message: readingActivity
         })
     } catch (e) {
         console.log(e);

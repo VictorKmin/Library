@@ -3,6 +3,12 @@ const hasher = require('../../helper/passwordHasher');
 const tokenizer = require('../../helper/tokinazer').accessAndRefresh;
 const chalk = require('chalk');
 
+/**
+ * In this method we login user to our system.
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
 module.exports = async (req, res) => {
     try {
         const userModel = DataBase.getModel('User');

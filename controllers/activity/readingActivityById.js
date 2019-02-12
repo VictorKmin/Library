@@ -17,7 +17,11 @@ module.exports = async (req, res) => {
             where: {
                 book_id: bookId
             },
-            include: [UserModel],
+            include: [{
+                model: UserModel,
+                attributes: ['name']
+            }],
+            order: [['created_at', 'DESC']]
         });
 
         res.json({

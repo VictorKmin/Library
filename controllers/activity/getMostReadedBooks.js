@@ -3,6 +3,12 @@ const tokenVerifiactor = require('../../helper/tokenVerificator');
 const secret = require('../../config/secrets').secret;
 const Sequelize = require("sequelize");
 
+/**
+ * In this method we get top books for reading count.
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
 module.exports = async (req, res) => {
     try {
         const limit = req.params.limit;
