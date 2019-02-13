@@ -10,14 +10,12 @@ const secret = require('../../config/secrets').secret;
  * @param res
  * @returns {Promise<void>}
  */
-module.exports = async (req, res) => {
+module.exports = async (commentId, token) => {
     try {
         const CommentModel = dataBase.getModel('Comment');
         const CommentActivityModel = dataBase.getModel('CommentActivity');
-        const token = req.get('Authorization');
         if (!token) throw new Error('No token');
-        const commentId = req.params.id;
-        if (!id) throw new Error('Bad request');
+        if (!commentId) throw new Error('Bad request');
         const {role} = tokenVerifiactor(token, secret);
         if (role !== 1) throw new Error('You are not admin');
 
@@ -40,16 +38,7 @@ module.exports = async (req, res) => {
                 id: commentId
             }
         });
-
-        res.json({
-            success: true,
-            message: 'Comment is deleted'
-        })
     } catch (e) {
         console.log(e.message);
-        res.json({
-            success: false,
-            message: e.message
-        })
     }
 };

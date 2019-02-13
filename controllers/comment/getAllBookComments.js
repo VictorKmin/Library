@@ -1,31 +1,23 @@
-const DataBase = require('../../dataBase').getInstance();
-module.exports = async (req, res) => {
+const dataBase = require('../../dataBase').getInstance();
+module.exports = async (bookId) => {
     try {
-        const id = req.query.id;
-        if (!id) throw new Error('Chose book first');
-        const CommentModel = DataBase.getModel('Comment');
-        const User = DataBase.getModel('User');
+        if (!bookId) throw new Error('Chose book first');
+        const CommentModel = dataBase.getModel('Comment');
+        const User = dataBase.getModel('User');
 
         // Include makes a SQL JOIN on the table in scopes.
         // By what fields we doing a search we define in ORM model
         const allComments = await CommentModel.findAll({
             where: {
-                book_id: id
+                book_id: bookId
             },
             order: [["created_at", 'DESC']],
             include: [User]
         });
 
-        res.json({
-            success: true,
-            message: allComments
-        })
+        return allComments
+
     } catch (e) {
         console.log(e);
-        res.json({
-            success: false,
-            message: e.message
-        })
     }
-
 };
