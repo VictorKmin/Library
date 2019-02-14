@@ -23,14 +23,34 @@ const userRouter = require('./routes/user');
 const activityRouter = require('./routes/activity');
 
 
-const deleteComment = require('./controllers/comment/deleteById');
+// const deleteComment = require('./controllers/comment/deleteById');
 const allComment = require('./controllers/comment/getAllBookComments');
+const updateComment = require('./controllers/comment/updateById');
+// const createComment = require('./controllers/comment/createNewComment');
 io.sockets.on('connection', socket => {
     console.log('connected');
-    socket.on('deleteComment', async (commentId, token, bookId)=> {
-        deleteComment(commentId, token);
-        socket.emit('allComments', await allComment(bookId))
-    })
+
+    socket.on('getComments', async (body) => {
+        const {bookId, limit} = body;
+        socket.emit('comments', await allComment(bookId, limit))
+    });
+
+    // socket.on('deleteComment', async (body) => {
+    //     const {commentId, token} = body;
+    //     const bookId = await deleteComment(commentId, token);
+    //     socket.emit('comments', await allComment(bookId, 5))
+    // });
+
+    socket.on('updateComment', async (body) => {
+        const {commentId, newComment, token} = body;
+        const bookId = await updateComment(commentId, newComment, token);
+        socket.emit('comments', await allComment(bookId, 5))
+    });
+
+    // socket.on('createComment', async body => {
+    //     const {comment, bookId, token} = body;
+    //     await createComment()
+    // })
 });
 
 app.use((req, res, next) => {
@@ -39,7 +59,6 @@ app.use((req, res, next) => {
     res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE,PATCH");
     res.header("Access-Control-Allow-Headers", "*");
     req.io = io;
-    console.log('YA TUT');
     next();
 });
 app.use(express.static(path.join(__dirname, 'public')));

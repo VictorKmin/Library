@@ -10,11 +10,14 @@ const secret = require('../../config/secrets').secret;
  * @param res
  * @returns {Promise<void>}
  */
-module.exports = async (commentId, token) => {
+module.exports = async (req, res) => {
     try {
         const CommentModel = dataBase.getModel('Comment');
+        const User = dataBase.getModel('User');
         const CommentActivityModel = dataBase.getModel('CommentActivity');
+        const token = req.get('Authorization');
         if (!token) throw new Error('No token');
+        const commentId = req.params.id;
         if (!commentId) throw new Error('Bad request');
         const {role} = tokenVerifiactor(token, secret);
         if (role !== 1) throw new Error('You are not admin');
@@ -27,6 +30,8 @@ module.exports = async (commentId, token) => {
 
         if (!isCommentPresent) throw new Error('Comment not found');
 
+        const {book_id} = isCommentPresent.dataValues;
+
         await CommentActivityModel.destroy({
             where: {
                 comment_id: commentId
@@ -38,7 +43,27 @@ module.exports = async (commentId, token) => {
                 id: commentId
             }
         });
+        const allComments = await CommentModel.findAll({
+            where: {
+                book_id
+            },
+            order: [["created_at", 'DESC']],
+            include: [User]
+        });
+
+        res.json({
+            success: true,
+            message: 'Comment is deleted'
+        });
+
+
+        req.io.sockets.emit('comments' , allComments)
+
     } catch (e) {
         console.log(e.message);
+        res.json({
+            success: false,
+            message: e.message
+        })
     }
 };

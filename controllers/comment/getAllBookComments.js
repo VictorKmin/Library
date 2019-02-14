@@ -1,7 +1,9 @@
 const dataBase = require('../../dataBase').getInstance();
-module.exports = async (bookId) => {
+
+module.exports = async (bookId, limit) => {
     try {
         if (!bookId) throw new Error('Chose book first');
+        if (!limit && limit !== 0) throw new Error('Chose book first');
         const CommentModel = dataBase.getModel('Comment');
         const User = dataBase.getModel('User');
 
@@ -12,7 +14,8 @@ module.exports = async (bookId) => {
                 book_id: bookId
             },
             order: [["created_at", 'DESC']],
-            include: [User]
+            include: [User],
+            limit
         });
 
         return allComments

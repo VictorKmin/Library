@@ -44,10 +44,7 @@ module.exports = async (req, res, next) => {
             message: 'Comment is crated'
         });
 
-        req.io.sockets.emit('allComments' , {
-            success: true,
-            message: allComments
-        })
+        req.io.sockets.emit('comments' , allComments)
 
     } catch (e) {
         console.log(e.message);

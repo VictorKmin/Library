@@ -1,17 +1,15 @@
 const dataBase = require('../../dataBase').getInstance();
 const tokenVerifiactor = require('../../helper/tokenVerificator');
 const secret = require('../../config/secrets').secret;
-module.exports = async (req, res) => {
+module.exports = async (commentId, newComment, token) => {
     try {
         const CommentModel = dataBase.getModel('Comment');
         const CommentActivityModel = dataBase.getModel('CommentActivity');
-        const token = req.get('Authorization');
         if (!token) throw new Error('No token');
         const {role, id: userId} = tokenVerifiactor(token, secret);
         if (role !== 1) throw new Error('You are not admin');
-        const commentId = req.params.id;
         if (!commentId) throw new Error('Bad request');
-        const {comment: newComment} = req.body;
+        if (!newComment) throw new Error('No comment found');
 
         const isCommentPresent = await CommentModel.findOne({
             where: {
@@ -42,16 +40,9 @@ module.exports = async (req, res) => {
             created_at: new Date().toISOString()
         });
 
+        return book_id
 
-        res.json({
-            success: true,
-            message: 'Comment is updated'
-        })
     } catch (e) {
         console.log(e.message);
-        res.json({
-            success: false,
-            message: e.message
-        })
     }
 };

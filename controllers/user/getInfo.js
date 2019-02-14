@@ -14,7 +14,6 @@ module.exports = async (req, res) => {
             }
         });
 
-        console.log(user.dataValues);
         res.json({
             success: true,
             message: user
