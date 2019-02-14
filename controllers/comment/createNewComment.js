@@ -1,7 +1,8 @@
 const dataBase = require('../../dataBase').getInstance();
 const tokenVerifiactor = require('../../helper/tokenVerificator');
 const secret = require('../../config/secrets').secret;
-module.exports = async (req, res, next) => {
+const getAllComments = require('../../controllers/comment/getAllBookComments');
+module.exports = async (req, res) => {
     try {
         const CommentModel = dataBase.getModel('Comment');
         const CommentActivity = dataBase.getModel('CommentActivity');
@@ -31,20 +32,18 @@ module.exports = async (req, res, next) => {
             created_at: new Date().toISOString()
         });
 
-        const allComments = await CommentModel.findAll({
-            where: {
-                book_id: bookId
-            },
-            order: [["created_at", 'DESC']],
-            include: [User]
-        });
+        const allComments = getAllComments(bookId, 5);
 
         res.json({
             success: true,
             message: 'Comment is crated'
         });
 
-        req.io.sockets.emit('comments' , allComments)
+        /**
+         * I have socket in request. If all fine
+         * I emit event with comments and catch this Event on Angular
+         */
+        req.io.sockets.emit('comments', allComments)
 
     } catch (e) {
         console.log(e.message);

@@ -3,6 +3,7 @@ const dataBase = require('../../dataBase').getInstance();
 const secret = require('../../config/secrets').secret;
 const tokenVerifiactor = require('../../helper/tokenVerificator');
 let updateAuxiliary = require('../book/bookHelpers/updateAuxiliary');
+let getBookById = require('../book/getBookById');
 const fs = require('fs');
 const path = require('path');
 let MAIN_PATH = require('../../constants/values').MAIN_PATH;
@@ -19,6 +20,10 @@ let MAIN_PATH = require('../../constants/values').MAIN_PATH;
  */
 module.exports = async (req, res) => {
     try {
+
+
+
+        console.log('AYAYAYYAAYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYAYAYAYAY')
         const BookModel = dataBase.getModel('Book');
         const bookId = req.params.id;
         if (!bookId) throw new Error('Something wrong with URL');
@@ -110,10 +115,21 @@ module.exports = async (req, res) => {
 
         console.log(chalk.bgMagenta(`Book updated successful`));
 
+        const updatedBook = await getBookById(bookId);
+        console.log('________________________');
+        console.log(updatedBook);
+        console.log('________________________');
         res.json({
             success: true,
             message: 'Book successful updated'
-        })
+        });
+
+        /**
+         * I have socket in request. If all fine
+         * I emit event with comments and catch this Event on Angular
+         */
+        req.io.sockets.emit('book' , updatedBook)
+
     } catch
         (e) {
         console.log(e);

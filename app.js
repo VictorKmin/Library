@@ -26,6 +26,7 @@ const activityRouter = require('./routes/activity');
 // const deleteComment = require('./controllers/comment/deleteById');
 const allComment = require('./controllers/comment/getAllBookComments');
 const updateComment = require('./controllers/comment/updateById');
+const getBookById = require('./controllers/book/getBookById');
 // const createComment = require('./controllers/comment/createNewComment');
 io.sockets.on('connection', socket => {
     console.log('connected');
@@ -33,6 +34,9 @@ io.sockets.on('connection', socket => {
     socket.on('getComments', async (body) => {
         const {bookId, limit} = body;
         socket.emit('comments', await allComment(bookId, limit))
+    });
+    socket.on('getBook', async id => {
+        socket.emit('book', await getBookById(id))
     });
 
     // socket.on('deleteComment', async (body) => {

@@ -56,7 +56,10 @@ module.exports = async (req, res) => {
             message: 'Comment is deleted'
         });
 
-
+        /**
+         * I have socket in request. If all fine
+         * I emit event with comments and catch this Event on Angular
+         */
         req.io.sockets.emit('comments' , allComments)
 
     } catch (e) {

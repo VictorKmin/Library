@@ -1,13 +1,14 @@
 const DataBase = require('../../dataBase').getInstance();
 const Sequelize = require("sequelize");
 
-module.exports = async (req, res) => {
+// module.exports = async (req, res) => {
+module.exports = async (id) => {
     try {
         const BookModel = DataBase.getModel('Book');
         const CommentModel = DataBase.getModel('Comment');
         const BookStatModel = DataBase.getModel('BookStat');
         const UserModel = DataBase.getModel('User');
-        const id = req.params.id;
+        // const id = req.params.id;
         if (!id) throw new Error('U have not id in url');
 
         // SELECT * FROM book WHERE id = id;
@@ -52,15 +53,17 @@ module.exports = async (req, res) => {
         }
         book.dataValues.countOfComments = countOfComments;
 
-        res.json({
-            success: true,
-            message: book
-        })
+        // res.json({
+        //     success: true,
+        //     message: book
+        // })
+
+        return book
     } catch (e) {
         console.log(e);
-        res.json({
-            success: false,
-            message: e.message
-        })
+        // res.json({
+        //     success: false,
+        //     message: e.message
+        // })
     }
 };

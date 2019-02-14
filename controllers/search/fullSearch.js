@@ -57,15 +57,16 @@ module.exports = async (req, res) => {
             }
         });
 
-        booksInfo.map((bookStat) => {
-            bookStat.dataValues.avgStar = +(bookStat.dataValues.avgStar.slice(0, 3));
-            books.forEach(value => {
-                if (bookStat.dataValues.book_id === value.dataValues.id) {
-                    bookStat.dataValues.bookInfo = value.dataValues;
+        books.map((bookStat) => {
+            booksInfo.forEach(rating => {
+                if (bookStat.dataValues.id === rating.dataValues.book_id) {
+                    bookStat.dataValues.countOfVotes = rating.dataValues.countOfVotes;
+                    bookStat.dataValues.avgStar = +(rating.dataValues.avgStar.slice(0, 3));
                 }
             });
         });
 
+        console.log(booksInfo);
         res.json({
             success: true,
             message: booksInfo
