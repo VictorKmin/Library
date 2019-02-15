@@ -1,13 +1,13 @@
 const chalk = require('chalk');
-const DataBase = require('../../dataBase').getInstance();
+const dataBase = require('../../dataBase').getInstance();
 const tokenVerifiactor = require('../../helper/tokenVerificator');
 const secret = require('../../config/secrets').secret;
 let MILLISECONDS_ID_DAY = require('../../constants/values').MILLISECONDS_ID_DAY;
 
 module.exports = async (req, res) => {
     try {
-        const BookModel = DataBase.getModel('Book');
-        const BookStatModel = DataBase.getModel('BookStat');
+        const BookModel = dataBase.getModel('Book');
+        const BookStatModel = dataBase.getModel('BookStat');
         const ReaddingActvityModel = dataBase.getModel('ReadingActivity');
         const token = req.get('Authorization');
         if (!token) throw new Error('No token');
@@ -39,7 +39,7 @@ module.exports = async (req, res) => {
             created_at: new Date().toISOString()
         });
 
-        console.log(chalk.magenta(`User ${id} get book ${bookId} for reading`));
+        console.log(chalk.magenta(`User ${userId} get book ${bookId} for reading`));
         res.json({
             success: true,
             message: 'Book status is changed'

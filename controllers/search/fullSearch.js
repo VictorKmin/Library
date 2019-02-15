@@ -23,7 +23,7 @@ module.exports = async (req, res) => {
         const keyWord = req.query.word;
         if (!keyWord) throw new Error('Something wrong with URL');
 
-        const booksValues = await SearchModel.findAll({
+        const booksByKeyWord = await SearchModel.findAll({
             attributes: ['book_id'],
             where: {
                 description: {
@@ -32,15 +32,15 @@ module.exports = async (req, res) => {
             }
         });
 
-        let booksId = [];
-        booksValues.forEach(book => {
-            booksId.push(book.dataValues.book_id)
+        let booksIds = [];
+        booksByKeyWord.forEach(book => {
+            booksIds.push(book.dataValues.book_id)
         });
 
-        console.log(booksId);
+        console.log(booksIds); //[25,26]
         const books = await BookModel.findAll({
             where: {
-                id: booksId
+                id: booksIds
             }
         });
 
@@ -51,12 +51,13 @@ module.exports = async (req, res) => {
                 [Sequelize.fn('COUNT', Sequelize.col('id')), 'countOfVotes']
             ],
             group: 'book_id',
-            order: [[Sequelize.fn('AVG', Sequelize.col('star')), 'DESC']],
             where: {
-                book_id: booksId
+                book_id: booksIds
             }
         });
 
+
+        // Не код а піздєц
         books.map((bookStat) => {
             booksInfo.forEach(rating => {
                 if (bookStat.dataValues.id === rating.dataValues.book_id) {
@@ -66,10 +67,9 @@ module.exports = async (req, res) => {
             });
         });
 
-        console.log(booksInfo);
         res.json({
             success: true,
-            message: booksInfo
+            message: books
         })
     } catch (e) {
         console.log(e);

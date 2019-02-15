@@ -13,11 +13,7 @@ module.exports = async (req, res) => {
         const BookModel = DataBase.getModel('Book');
         const RatingModel = DataBase.getModel('Rating');
 
-        // SELECT * FROM book WHERE id IN booksIds
-        const allBooks = await BookModel.findAll({
-            order: ['title'],
-
-        });
+        const allBooks = await BookModel.findAll({});
 
         allBooks.forEach(book => {
             const {id} = book.dataValues;
@@ -25,6 +21,7 @@ module.exports = async (req, res) => {
             booksIds.push(id);
         });
 
+        console.log(booksIds);
         // SELECT bookid, AVG(star), COUNT(id) FROM rating GROUP BY bookid ORDER BY AVG(star) DESC
         const ratingInfo = await RatingModel.findAll({
             attributes: [

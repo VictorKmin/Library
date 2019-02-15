@@ -54,6 +54,10 @@ module.exports = async (req, res) => {
             });
         });
 
+        top5.sort((first, second)=> {
+            return second.dataValues.avgStar - first.dataValues.avgStar
+        });
+
         res.json({
             success: true,
             message: top5

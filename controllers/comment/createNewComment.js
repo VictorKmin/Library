@@ -32,11 +32,10 @@ module.exports = async (req, res) => {
             created_at: new Date().toISOString()
         });
 
-        const allComments = getAllComments(bookId, 5);
-
+        const allComments = await getAllComments(bookId, 5);
         res.json({
             success: true,
-            message: 'Comment is crated'
+            message: 'Comment is created'
         });
 
         /**
