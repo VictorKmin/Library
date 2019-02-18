@@ -9,11 +9,20 @@ const Sequelize = require("sequelize");
  */
 module.exports = async (req, res) => {
     try {
+        const page = req.params.page;
+        const limit = req.params.limit;
+
+        if (!page || page < 0 || limit < 0 || !limit) throw new Error('Bad request');
+        const offsetCount = (page * limit) - limit;
+
         let booksIds = [];
         const BookModel = DataBase.getModel('Book');
         const RatingModel = DataBase.getModel('Rating');
 
-        const allBooks = await BookModel.findAll({});
+        const allBooks = await BookModel.findAll({
+            limit,
+            offset: offsetCount
+        });
 
         allBooks.forEach(book => {
             const {id} = book.dataValues;
@@ -44,9 +53,22 @@ module.exports = async (req, res) => {
             });
         });
 
+        // Alphabet sort
+        allBooks.sort((first, second) => {
+            if (first.dataValues.title < second.dataValues.title) return -1;
+            if (first.dataValues.title > second.dataValues.title) return 1;
+            return 0;
+        });
+
+        const booksCount = await BookModel.findAll({});
+        const pageCount = Math.ceil(booksCount.length / limit);
+
         res.json({
             success: true,
-            message: allBooks
+            message: {
+                books: allBooks,
+                pageCount
+            }
         })
     } catch (e) {
         console.log(e);

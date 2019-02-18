@@ -116,9 +116,6 @@ module.exports = async (req, res) => {
         console.log(chalk.bgMagenta(`Book updated successful`));
 
         const updatedBook = await getBookById(bookId);
-        console.log('________________________');
-        console.log(updatedBook);
-        console.log('________________________');
         res.json({
             success: true,
             message: 'Book successful updated'

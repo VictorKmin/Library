@@ -27,7 +27,9 @@ const storage = multer.diskStorage({
 });
 const upload = multer({storage});
 
-const topBooks = require('../controllers/book/getTopBooks');
+const topByRating = require('../controllers/book/getTopByRating');
+const topByComments = require('../controllers/book/getTopByComments');
+const topByReading = require('../controllers/book/getTopByReading');
 const getBookById = require('../controllers/book/getBookById');
 const readBook = require('../controllers/book/takeBookForReading');
 const downloadBook = require('../controllers/book/downloadBook');
@@ -39,14 +41,16 @@ const returnBook = require('../controllers/book/returnBook');
 const deleteBook = require('../controllers/book/deleteBook');
 const updateBook = require('../controllers/book/updateBook');
 
-router.get('/top/:page/:limit', topBooks);
+router.get('/topByRating/:page/:limit', topByRating);
+router.get('/topByComments/:page/:limit', topByComments);
+router.get('/topByReading/:page/:limit', topByReading);
 router.get('/:id', getBookById);
 router.get('/download/:id', downloadBook);
 router.post('/read/:id', readBook);
 // Name in input on angular must be the same,like key in upload.single('key')
 //  <input type="file" name="photo">  ---> upload.single('photo') ----> key is "photo"
 router.post('/', upload.fields([{name: 'photo', maxCount: 1}, {name: 'file', maxCount: 1}]), addBook);
-router.get('/', gelAllBooks);
+router.get('/:page/:limit', gelAllBooks);
 router.patch('/', stillReading);
 router.delete('/return/:id', returnBook);
 //ADMIN ROUTES

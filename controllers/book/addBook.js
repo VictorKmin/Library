@@ -36,9 +36,10 @@ module.exports = async (req, res) => {
 
         insertAuxiliary(bookId, bookInfo, fileInfo);
 
+        // return book id for Angular. When book is uploaded I navigate to this book
         res.json({
             success: true,
-            message: 'OK'
+            message: bookId
         })
     } catch (e) {
         console.log(e);

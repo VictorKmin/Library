@@ -13,13 +13,15 @@ const Sequelize = require("sequelize");
  */
 module.exports = async (req, res) => {
     try {
-        let page = req.params.page;
-        let limit = req.params.limit;
+        const page = req.params.page;
+        const limit = req.params.limit;
         let top5BooksIds = [];
         const BookModel = DataBase.getModel('Book');
         const RatingModel = DataBase.getModel('Rating');
+        if (!page || page < 0 || limit < 0 || !limit) throw new Error('Bad request');
+        const offsetCount = (page * limit) - limit;
 
-        // SELECT bookid, AVG(star), COUNT(id) FROM rating GROUP BY bookid ORDER BY AVG(star) DESC LIMIT 5;
+        // SELECT bookid, AVG(star), COUNT(id) FROM rating GROUP BY bookid ORDER BY AVG(star) DESC LIMIT 5 OFFSET 10;
         const booksInfo = await RatingModel.findAll({
             attributes: [
                 'book_id',
@@ -28,7 +30,8 @@ module.exports = async (req, res) => {
             ],
             group: 'book_id',
             order: [[Sequelize.fn('AVG', Sequelize.col('star')), 'DESC']],
-            limit
+            limit,
+            offset: offsetCount
         });
 
         booksInfo.forEach(book => {
@@ -39,13 +42,13 @@ module.exports = async (req, res) => {
 
 
         // SELECT * FROM book WHERE id IN top5BooksIds
-        const top5 = await BookModel.findAll({
+        const topBooks = await BookModel.findAll({
             where: {
                 id: top5BooksIds
             }
         });
 
-        top5.map((bookStat) => {
+        topBooks.map((bookStat) => {
             booksInfo.forEach(rating => {
                 if (bookStat.dataValues.id === rating.dataValues.book_id) {
                     bookStat.dataValues.countOfVotes = rating.dataValues.countOfVotes;
@@ -54,14 +57,27 @@ module.exports = async (req, res) => {
             });
         });
 
-        top5.sort((first, second)=> {
+        topBooks.sort((first, second) => {
             return second.dataValues.avgStar - first.dataValues.avgStar
+        });
+
+        const booksCount = await RatingModel.findAll({
+            attributes: [
+                'book_id',
+                [Sequelize.fn('AVG', Sequelize.col('star')), 'avgStar'],
+                [Sequelize.fn('COUNT', Sequelize.col('id')), 'countOfVotes']
+            ],
+            group: 'book_id',
         });
 
         res.json({
             success: true,
-            message: top5
-        })
+            message: booksInfo.length
+        });
+
+        const pageCount = Math.ceil(booksCount.length / limit);
+        req.io.sockets.emit('topBooks', {books: topBooks, pageCount})
+
     } catch (e) {
         console.log(e);
         res.json({
