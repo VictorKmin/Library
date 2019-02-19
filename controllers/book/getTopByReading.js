@@ -28,6 +28,7 @@ module.exports = async (req, res) => {
                 [Sequelize.fn('COUNT', Sequelize.col('id')), 'countOfReading']
             ],
             group: 'book_id',
+            order: [[Sequelize.fn('COUNT', Sequelize.col('id')), 'DESC']],
             limit,
             offset: offsetCount,
             where: {

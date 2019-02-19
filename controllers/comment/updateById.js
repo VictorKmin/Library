@@ -1,7 +1,7 @@
 const dataBase = require('../../dataBase').getInstance();
 const tokenVerifiactor = require('../../helper/tokenVerificator');
 const secret = require('../../config/secrets').secret;
-module.exports = async (commentId, newComment, token) => {
+module.exports = async (token, commentId, newComment) => {
     try {
         const CommentModel = dataBase.getModel('Comment');
         const CommentActivityModel = dataBase.getModel('CommentActivity');

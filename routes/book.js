@@ -46,11 +46,11 @@ router.get('/topByComments/:page/:limit', topByComments);
 router.get('/topByReading/:page/:limit', topByReading);
 router.get('/:id', getBookById);
 router.get('/download/:id', downloadBook);
-router.post('/read/:id', readBook);
 // Name in input on angular must be the same,like key in upload.single('key')
 //  <input type="file" name="photo">  ---> upload.single('photo') ----> key is "photo"
 router.post('/', upload.fields([{name: 'photo', maxCount: 1}, {name: 'file', maxCount: 1}]), addBook);
 router.get('/:page/:limit', gelAllBooks);
+router.post('/read/:id', readBook);
 router.patch('/', stillReading);
 router.delete('/return/:id', returnBook);
 //ADMIN ROUTES

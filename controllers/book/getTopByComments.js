@@ -27,6 +27,7 @@ module.exports = async (req, res) => {
                 'book_id',
                 [Sequelize.fn('COUNT', Sequelize.col('id')), 'countOfComments']
             ],
+            order: [[Sequelize.fn('COUNT', Sequelize.col('id')), 'DESC']],
             group: 'book_id',
             limit,
             offset: offsetCount
@@ -76,7 +77,6 @@ module.exports = async (req, res) => {
         topBooks.sort((first, second) => {
             return second.dataValues.countOfComments - first.dataValues.countOfComments
         });
-
 
         res.json({
             success: true,

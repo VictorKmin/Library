@@ -2,7 +2,8 @@ const chalk = require('chalk');
 const dataBase = require('../../dataBase').getInstance();
 const tokenVerifiactor = require('../../helper/tokenVerificator');
 const secret = require('../../config/secrets').secret;
-let MILLISECONDS_ID_DAY = require('../../constants/values').MILLISECONDS_ID_DAY;
+const MILLISECONDS_ID_DAY = require('../../constants/values').MILLISECONDS_ID_DAY;
+const getBookById = require('../../controllers/book/getBookById');
 
 module.exports = async (req, res) => {
     try {
@@ -40,10 +41,16 @@ module.exports = async (req, res) => {
         });
 
         console.log(chalk.magenta(`User ${userId} get book ${bookId} for reading`));
+
+        const book = await getBookById(bookId);
+
         res.json({
             success: true,
             message: 'Book status is changed'
-        })
+        });
+
+        req.io.sockets.emit('book', book);
+
     } catch
         (e) {
         console.log(e);

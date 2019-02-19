@@ -2,6 +2,7 @@ const chalk = require('chalk');
 const dataBase = require('../../dataBase').getInstance();
 const secret = require('../../config/secrets').secret;
 const tokenVerifiactor = require('../../helper/tokenVerificator');
+const getBookById = require('../../controllers/book/getBookById');
 
 module.exports = async (req, res) => {
     try {
@@ -13,17 +14,27 @@ module.exports = async (req, res) => {
         if (!bookId) throw new Error('Something wrong with URL');
         const token = req.get('Authorization');
         if (!token) throw new Error('No token');
-        const {id: userId} = tokenVerifiactor(token, secret);
+        const {id: userId, role} = tokenVerifiactor(token, secret);
 
-        const book = await BookStatModel.destroy({
+        const isBookPresent = await BookStatModel.findOne({
             where: {
-                book_id: bookId,
-                user_id: userId
+                book_id: bookId
             }
         });
 
-        console.log(book);
-        if (!book) throw new Error('Book not found');
+        if (!isBookPresent) throw new Error('Bad request');
+
+        const {user_id} = isBookPresent.dataValues;
+
+        if (user_id !== userId && role !== 1) throw new Error('Bad request');
+
+        const deletedBook = await BookStatModel.destroy({
+            where: {
+                book_id: bookId,
+            }
+        });
+
+        if (!deletedBook) throw new Error('Book not found');
 
         await BookModel.update({
             is_reading: false
@@ -43,10 +54,15 @@ module.exports = async (req, res) => {
 
         console.log(chalk.magenta(`User ${userId} return book ${bookId}`));
 
+        const book = await getBookById(bookId);
+
         res.json({
             success: true,
             message: 'Book successful updated'
-        })
+        });
+
+        req.io.sockets.emit('book', book);
+
     } catch (e) {
         console.log(e);
         res.json({

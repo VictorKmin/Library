@@ -28,19 +28,17 @@ module.exports = async (id) => {
 
 
         if (book.dataValues.is_reading) {
-            // SELECT * FROM bookstat b JOIN users u on b.user_id = u.id WHERE b.book_id = id ORDER BY b.id;
-            const whoReadBook = await BookStatModel.findOne({
+            // SELECT * FROM bookstat b JOIN users u on b.user_id = u.id WHERE b.book_id = id;
+            const bookInfo = await BookStatModel.findOne({
                 where: {
                     book_id: id
                 },
                 include: [UserModel],
-                order: [
-                    ['id', 'DESC']
-                ]
             });
-            book.dataValues.backTime = whoReadBook.dataValues.back_time;
-            book.dataValues.userName = whoReadBook.dataValues.User.name;
-            book.dataValues.userIdWhoRead = whoReadBook.dataValues.user_id
+            book.dataValues.backTime = bookInfo.dataValues.back_time;
+            book.dataValues.userName = bookInfo.dataValues.User.name;
+            book.dataValues.userIdWhoRead = bookInfo.dataValues.user_id;
+            book.dataValues.is_delaying = bookInfo.dataValues.is_delaying;
         }
 
         let countOfComments;
@@ -53,17 +51,9 @@ module.exports = async (id) => {
         }
         book.dataValues.countOfComments = countOfComments;
 
-        // res.json({
-        //     success: true,
-        //     message: book
-        // })
-
         return book
+
     } catch (e) {
         console.log(e);
-        // res.json({
-        //     success: false,
-        //     message: e.message
-        // })
     }
 };

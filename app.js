@@ -1,7 +1,21 @@
 const express = require('express');
 const app = express();
-// const http = require('http').createServer(app);
-const io = require('socket.io').listen(app.listen(3001));
+const io = require('socket.io').listen(app.listen(3001, err => {
+    // http://patorjk.com/software/taag/#p=display&f=Electronic&t=LIBRARY -> HOW I DO THIS
+    if (!err) console.log(chalk.blue(
+        ' ▄            ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄   ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄         ▄ \n' +
+        '▐░▌          ▐░░░░░░░░░░░▌▐░░░░░░░░░░▌ ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌       ▐░▌\n' +
+        '▐░▌           ▀▀▀▀█░█▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░▌       ▐░▌\n' +
+        '▐░▌               ▐░▌     ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░▌       ▐░▌\n' +
+        '▐░▌               ▐░▌     ▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄█░▌\n' +
+        '▐░▌               ▐░▌     ▐░░░░░░░░░░▌ ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌\n' +
+        '▐░▌               ▐░▌     ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀█░█▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀█░█▀▀  ▀▀▀▀█░█▀▀▀▀ \n' +
+        '▐░▌               ▐░▌     ▐░▌       ▐░▌▐░▌     ▐░▌  ▐░▌       ▐░▌▐░▌     ▐░▌       ▐░▌     \n' +
+        '▐░█▄▄▄▄▄▄▄▄▄  ▄▄▄▄█░█▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌▐░▌      ▐░▌ ▐░▌       ▐░▌▐░▌      ▐░▌      ▐░▌     \n' +
+        '▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░▌ ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌       ▐░▌     ▐░▌     \n' +
+        ' ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀   ▀         ▀  ▀         ▀  ▀         ▀       ▀      \n' +
+        '                                                                                           '));
+}));
 
 const chalk = require('chalk');
 const path = require('path');
@@ -17,19 +31,21 @@ app.use(bodyParser.urlencoded({limit: '300mb', extended: true}));
 
 const mainRouter = require('./routes/auth');
 const bookRouter = require('./routes/book');
-const commentRouter = require('./routes/comment');
 const searchRouter = require('./routes/search');
 const userRouter = require('./routes/user');
 const activityRouter = require('./routes/activity');
 
-
-// const deleteComment = require('./controllers/comment/deleteById');
 const allComment = require('./controllers/comment/getAllBookComments');
 const updateComment = require('./controllers/comment/updateById');
+const deleteComment = require('./controllers/comment/deleteById');
 const getBookById = require('./controllers/book/getBookById');
-// const createComment = require('./controllers/comment/createNewComment');
+const createComment = require('./controllers/comment/createNewComment');
+
 io.sockets.on('connection', socket => {
-    console.log('connected');
+    console.log(chalk.bgGreen('CONNECT!'));
+    socket.on('disconnect', () => {
+        console.log(chalk.bgRed('DISCONNECT!'));
+    })
 
     socket.on('getComments', async (body) => {
         const {bookId, limit} = body;
@@ -39,22 +55,23 @@ io.sockets.on('connection', socket => {
         socket.emit('book', await getBookById(id))
     });
 
-    // socket.on('deleteComment', async (body) => {
-    //     const {commentId, token} = body;
-    //     const bookId = await deleteComment(commentId, token);
-    //     socket.emit('comments', await allComment(bookId, 5))
-    // });
-
-    socket.on('updateComment', async (body) => {
-        const {commentId, newComment, token} = body;
-        const bookId = await updateComment(commentId, newComment, token);
-        socket.emit('comments', await allComment(bookId, 5))
+    socket.on('deleteComment', async (body) => {
+        const {commentId, token, limit} = body;
+        const bookId = await deleteComment(commentId, token);
+        socket.emit('comments', await allComment(bookId, limit))
     });
 
-    // socket.on('createComment', async body => {
-    //     const {comment, bookId, token} = body;
-    //     await createComment()
-    // })
+    socket.on('updateComment', async (body) => {
+        const {commentId, newComment, token, limit} = body;
+        const bookId = await updateComment(token, commentId, newComment);
+        socket.emit('comments', await allComment(bookId, limit))
+    });
+
+    socket.on('createComment', async body => {
+        const {comment, bookId, token, limit} = body;
+        await createComment(comment, bookId, token);
+        socket.emit('comments', await allComment(bookId, limit))
+    })
 });
 
 app.use((req, res, next) => {
@@ -69,7 +86,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', mainRouter);
 app.use('/book', bookRouter);
-app.use('/comment', commentRouter);
 app.use('/search', searchRouter);
 app.use('/user', userRouter);
 app.use('/activity', activityRouter);
@@ -83,22 +99,5 @@ app.use('/activity', activityRouter);
 
     console.log(chalk.green('Child process started !'));
 })();
-
-// http.listen(3001, err => {
-//     // http://patorjk.com/software/taag/#p=display&f=Electronic&t=LIBRARY -> HOW I DO THIS
-//     if (!err) console.log(chalk.blue(
-//         ' ▄            ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄   ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄         ▄ \n' +
-//         '▐░▌          ▐░░░░░░░░░░░▌▐░░░░░░░░░░▌ ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌       ▐░▌\n' +
-//         '▐░▌           ▀▀▀▀█░█▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░▌       ▐░▌\n' +
-//         '▐░▌               ▐░▌     ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░▌       ▐░▌\n' +
-//         '▐░▌               ▐░▌     ▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄█░▌\n' +
-//         '▐░▌               ▐░▌     ▐░░░░░░░░░░▌ ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌\n' +
-//         '▐░▌               ▐░▌     ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀█░█▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀█░█▀▀  ▀▀▀▀█░█▀▀▀▀ \n' +
-//         '▐░▌               ▐░▌     ▐░▌       ▐░▌▐░▌     ▐░▌  ▐░▌       ▐░▌▐░▌     ▐░▌       ▐░▌     \n' +
-//         '▐░█▄▄▄▄▄▄▄▄▄  ▄▄▄▄█░█▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌▐░▌      ▐░▌ ▐░▌       ▐░▌▐░▌      ▐░▌      ▐░▌     \n' +
-//         '▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░▌ ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌       ▐░▌     ▐░▌     \n' +
-//         ' ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀   ▀         ▀  ▀         ▀  ▀         ▀       ▀      \n' +
-//         '                                                                                           '));
-// });
 
 module.exports = app;
