@@ -34,18 +34,23 @@ const bookRouter = require('./routes/book');
 const searchRouter = require('./routes/search');
 const userRouter = require('./routes/user');
 const activityRouter = require('./routes/activity');
+const subjectRouter = require('./routes/subject');
 
 const allComment = require('./controllers/comment/getAllBookComments');
 const updateComment = require('./controllers/comment/updateById');
 const deleteComment = require('./controllers/comment/deleteById');
 const getBookById = require('./controllers/book/getBookById');
 const createComment = require('./controllers/comment/createNewComment');
+const allSubjects = require('./controllers/subject/getAllSubjects');
+const removeSubjectById = require('./controllers/subject/removeById');
+const updateSubjectById = require('./controllers/subject/updateById');
+const createSubject = require('./controllers/subject/createSubject');
 
 io.sockets.on('connection', socket => {
     console.log(chalk.bgGreen('CONNECT!'));
     socket.on('disconnect', () => {
         console.log(chalk.bgRed('DISCONNECT!'));
-    })
+    });
 
     socket.on('getComments', async (body) => {
         const {bookId, limit} = body;
@@ -71,7 +76,26 @@ io.sockets.on('connection', socket => {
         const {comment, bookId, token, limit} = body;
         await createComment(comment, bookId, token);
         socket.emit('comments', await allComment(bookId, limit))
-    })
+    });
+
+    socket.on('getSubjects', async () => {
+        socket.emit('subjects', await allSubjects())
+    });
+
+    socket.on('removeSubject', async (body) => {
+        await removeSubjectById(body);
+        socket.emit('subjects', await allSubjects())
+    });
+
+    socket.on('updateSubject', async (body) => {
+        await updateSubjectById(body);
+        socket.emit('subjects', await allSubjects())
+    });
+
+    socket.on('createSubject', async (body) => {
+        await createSubject(body);
+        socket.emit('subjects', await allSubjects())
+    });
 });
 
 app.use((req, res, next) => {
@@ -89,6 +113,7 @@ app.use('/book', bookRouter);
 app.use('/search', searchRouter);
 app.use('/user', userRouter);
 app.use('/activity', activityRouter);
+app.use('/subject', subjectRouter);
 
 /**
  * This child process using for check is user return book to office

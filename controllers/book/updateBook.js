@@ -20,10 +20,6 @@ let MAIN_PATH = require('../../constants/values').MAIN_PATH;
  */
 module.exports = async (req, res) => {
     try {
-
-
-
-        console.log('AYAYAYYAAYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYAYAYAYAY')
         const BookModel = dataBase.getModel('Book');
         const bookId = req.params.id;
         if (!bookId) throw new Error('Something wrong with URL');
