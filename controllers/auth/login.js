@@ -1,5 +1,5 @@
 const DataBase = require('../../dataBase').getInstance();
-const hasher = require('../../helper/passwordHasher');
+const userInfo = require('../../helper/getUserInfoFromHR');
 const tokenizer = require('../../helper/tokinazer').accessAndRefresh;
 const chalk = require('chalk');
 
@@ -11,29 +11,43 @@ const chalk = require('chalk');
  */
 module.exports = async (req, res) => {
     try {
-        const userModel = DataBase.getModel('User');
+        const UserModel = DataBase.getModel('User');
         const TokenModel = DataBase.getModel('Token');
         const {email, password} = req.body;
 
-        let user = await userModel.findOne({
+        const {name, roles} = await userInfo(email, password);
+        console.log(email);
+        console.log(password);
+        console.log(name);
+        console.log(roles);
+
+        // { name: 'Irina Chornomorets',
+        //     email: 'iwanreyko94@gmail.com',
+        //     position: 'PHP developer',
+        //     roles: 'administrator' }
+
+        let isUserPresent = await UserModel.findOne({
             where: {
                 email,
-                password
+                name
             }
         });
 
-        if (!user) throw new Error('Wrong email or password');
+        if (!isUserPresent) {
+            isUserPresent = await UserModel.create({
+                email,
+                name,
+                role: roles
+            })
+        }
 
-        const {id, role} = user.dataValues;
+        const {id, role} = isUserPresent.dataValues;
         let isTokenPresent = await TokenModel.findOne({
             where: {
                 user_id: id
             }
         });
         if (isTokenPresent) throw new Error('You are already logged. Logout first, please');
-
-        const hashedPass = hasher(password);
-        console.log(chalk.green(hashedPass));
 
         let {accessToken, refreshToken} = tokenizer(id, email, role);
         console.log(chalk.blue(`Pair of token is created. User with mail ${email} logged`));
@@ -52,12 +66,10 @@ module.exports = async (req, res) => {
         })
     } catch (e) {
         console.error(e);
-        res
-            .status(401)
-            .json({
-                success: false,
-                message: e.message
-            })
+        res.json({
+            success: false,
+            message: e.message
+        })
     }
 };
 

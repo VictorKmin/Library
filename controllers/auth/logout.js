@@ -1,7 +1,7 @@
 const viryfiToken = require('../../helper/tokenVerificator');
 const secretWord = require('../../config/secrets').secret;
 const dataBase = require('../../dataBase').getInstance();
-const chalk = require('chalk')
+const chalk = require('chalk');
 module.exports = async (req, res) => {
     try {
         let TokenModel = dataBase.getModel('Token');
