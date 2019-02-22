@@ -36,15 +36,10 @@ const userRouter = require('./routes/user');
 const activityRouter = require('./routes/activity');
 const subjectRouter = require('./routes/subject');
 
-const allComment = require('./controllers/comment/getAllBookComments');
-const updateComment = require('./controllers/comment/updateById');
-const deleteComment = require('./controllers/comment/deleteById');
+const commentSocket = require('./controllers/sockets/comment');
 const getBookById = require('./controllers/book/getBookById');
-const createComment = require('./controllers/comment/createNewComment');
-const allSubjects = require('./controllers/subject/getAllSubjects');
-const removeSubjectById = require('./controllers/subject/removeById');
-const updateSubjectById = require('./controllers/subject/updateById');
-const createSubject = require('./controllers/subject/createSubject');
+const subjectSocket = require('./controllers/sockets/subject');
+const activitySocket = require('./controllers/sockets/activity');
 
 io.sockets.on('connection', socket => {
     console.log(chalk.bgGreen('CONNECT!'));
@@ -52,49 +47,12 @@ io.sockets.on('connection', socket => {
         console.log(chalk.bgRed('DISCONNECT!'));
     });
 
-    socket.on('getComments', async (body) => {
-        const {bookId, limit} = body;
-        socket.emit('comments', await allComment(bookId, limit))
-    });
+    commentSocket(socket);
+    subjectSocket(socket);
+    activitySocket(socket)
+
     socket.on('getBook', async id => {
         socket.emit('book', await getBookById(id))
-    });
-
-    socket.on('deleteComment', async (body) => {
-        const {commentId, token, limit} = body;
-        const bookId = await deleteComment(commentId, token);
-        socket.emit('comments', await allComment(bookId, limit))
-    });
-
-    socket.on('updateComment', async (body) => {
-        const {commentId, newComment, token, limit} = body;
-        const bookId = await updateComment(token, commentId, newComment);
-        socket.emit('comments', await allComment(bookId, limit))
-    });
-
-    socket.on('createComment', async body => {
-        const {comment, bookId, token, limit} = body;
-        await createComment(comment, bookId, token);
-        socket.emit('comments', await allComment(bookId, limit))
-    });
-
-    socket.on('getSubjects', async () => {
-        socket.emit('subjects', await allSubjects())
-    });
-
-    socket.on('removeSubject', async (body) => {
-        await removeSubjectById(body);
-        socket.emit('subjects', await allSubjects())
-    });
-
-    socket.on('updateSubject', async (body) => {
-        await updateSubjectById(body);
-        socket.emit('subjects', await allSubjects())
-    });
-
-    socket.on('createSubject', async (body) => {
-        await createSubject(body);
-        socket.emit('subjects', await allSubjects())
     });
 });
 

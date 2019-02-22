@@ -1,12 +1,12 @@
 const chalk = require('chalk');
 const dataBase = require('../../dataBase').getInstance();
-const secret = require('../../config/secrets').secret;
+const {secret} = require('../../config/secrets');
 const tokenVerifiactor = require('../../helper/tokenVerificator');
 let updateAuxiliary = require('../book/bookHelpers/updateAuxiliary');
 let getBookById = require('../book/getBookById');
 const fs = require('fs');
 const path = require('path');
-let MAIN_PATH = require('../../constants/values').MAIN_PATH;
+const {ADMIN_ROLES, BLOCKED_ROLES, MAIN_PATH} = require('../../constants/values');
 
 /**
  * This method using for update book with new parameters
@@ -30,7 +30,7 @@ module.exports = async (req, res) => {
         const token = req.get('Authorization');
         if (!token) throw new Error('No token');
         const {role} = tokenVerifiactor(token, secret);
-        if (role !== 1) throw new Error('You are not admin. Sorry');
+        if (!ADMIN_ROLES.includes(role)) throw new Error('You are noy admin');
         let {photo = '', file = ''} = req.files;
         const [fileInfo] = file;
 

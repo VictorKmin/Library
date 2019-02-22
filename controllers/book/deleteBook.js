@@ -4,7 +4,8 @@ const secret = require('../../config/secrets').secret;
 const tokenVerifiactor = require('../../helper/tokenVerificator');
 const fs = require('fs');
 const path = require('path');
-let MAIN_PATH = require('../../constants/values').MAIN_PATH;
+const {ADMIN_ROLES, BLOCKED_ROLES, MAIN_PATH} = require('../../constants/values');
+
 module.exports = async (req, res) => {
     try {
         const BookModel = dataBase.getModel('Book');
@@ -21,7 +22,7 @@ module.exports = async (req, res) => {
         if (!token) throw new Error('No token');
         const {role} = tokenVerifiactor(token, secret);
 
-        if (role !== 1) throw new Error('You are not admin. Sorry');
+        if (!ADMIN_ROLES.includes(role)) throw new Error('You are noy admin');
 
         const bookToDelete = await BookModel.findOne({
             where: {

@@ -1,6 +1,8 @@
 const dataBase = require('../../dataBase').getInstance();
 const tokenVerifiactor = require('../../helper/tokenVerificator');
-const secret = require('../../config/secrets').secret;
+const {secret} = require('../../config/secrets');
+const {ADMIN_ROLES, BLOCKED_ROLES} = require('../../constants/values');
+
 
 /**
  * This method using for delete comment by ID
@@ -17,7 +19,7 @@ module.exports = async (commentId, token) => {
         if (!token) throw new Error('No token');
         if (!commentId) throw new Error('Bad request');
         const {role} = tokenVerifiactor(token, secret);
-        if (role !== 1) throw new Error('You are not admin');
+        if (!ADMIN_ROLES.includes(role)) throw new Error('You are noy admin');
 
         const isCommentPresent = await CommentModel.findOne({
             where: {

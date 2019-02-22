@@ -1,13 +1,16 @@
 const dataBase = require('../../dataBase').getInstance();
 const tokenVerifiactor = require('../../helper/tokenVerificator');
-const secret = require('../../config/secrets').secret;
+const {secret} = require('../../config/secrets');
+const {ADMIN_ROLES, BLOCKED_ROLES} = require('../../constants/values');
+
 module.exports = async (token, commentId, newComment) => {
     try {
         const CommentModel = dataBase.getModel('Comment');
         const CommentActivityModel = dataBase.getModel('CommentActivity');
         if (!token) throw new Error('No token');
         const {role, id: userId} = tokenVerifiactor(token, secret);
-        if (role !== 1) throw new Error('You are not admin');
+        if (!ADMIN_ROLES.includes(role)) throw new Error('You are noy admin');
+
         if (!commentId) throw new Error('Bad request');
         if (!newComment) throw new Error('No comment found');
 
