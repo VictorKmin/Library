@@ -121,7 +121,9 @@ module.exports = async (req, res) => {
          * I have socket in request. If all fine
          * I emit event with comments and catch this Event on Angular
          */
-        req.io.sockets.emit('book' , updatedBook)
+        const io = req.io;
+        const s = req.s;
+        io.to(s.id).emit('book' , updatedBook)
 
     } catch
         (e) {

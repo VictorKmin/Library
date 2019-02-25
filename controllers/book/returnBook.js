@@ -2,18 +2,19 @@ const chalk = require('chalk');
 const dataBase = require('../../dataBase').getInstance();
 const secret = require('../../config/secrets').secret;
 const tokenVerifiactor = require('../../helper/tokenVerificator');
-const getBookById = require('../../controllers/book/getBookById');
+// const getBookById = require('../../controllers/book/getBookById');
 
-module.exports = async (req, res) => {
+module.exports = async (body) => {
     try {
+
+        const {bookId, token} = body;
+        if (!bookId) throw new Error('Something wrong with URL');
+        if (!token) throw new Error('No token');
+
         const BookStatModel = dataBase.getModel('BookStat');
         const BookModel = dataBase.getModel('Book');
         const ReaddingActvityModel = dataBase.getModel('ReadingActivity');
 
-        const bookId = req.params.id;
-        if (!bookId) throw new Error('Something wrong with URL');
-        const token = req.get('Authorization');
-        if (!token) throw new Error('No token');
         const {id: userId, role} = tokenVerifiactor(token, secret);
 
         const isBookPresent = await BookStatModel.findOne({
@@ -53,21 +54,23 @@ module.exports = async (req, res) => {
         });
 
         console.log(chalk.magenta(`User ${userId} return book ${bookId}`));
-
-        const book = await getBookById(bookId);
-
-        res.json({
-            success: true,
-            message: 'Book successful updated'
-        });
-
-        req.io.sockets.emit('book', book);
+        //
+        // const book = await getBookById(bookId);
+        //
+        // res.json({
+        //     success: true,
+        //     message: 'Book successful updated'
+        // });
+        //
+        // const io = req.io;
+        // const s = req.s;
+        // io.emit('book', book);
 
     } catch (e) {
         console.log(e);
-        res.json({
-            success: false,
-            message: e.message
-        })
+        // res.json({
+        //     success: false,
+        //     message: e.message
+        // })
     }
 };

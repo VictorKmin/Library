@@ -1,7 +1,7 @@
 const dataBase = require('../../dataBase').getInstance();
 const tokenVerifiactor = require('../../helper/tokenVerificator');
 const secret = require('../../config/secrets').secret;
-const {ADMIN_ROLES, BLOCKED_ROLES} = require('../../constants/values');
+const {ADMIN_ROLES} = require('../../constants/values');
 
 /**
  * Method for get all comment activity.

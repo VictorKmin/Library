@@ -2,19 +2,18 @@ const chalk = require('chalk');
 const dataBase = require('../../dataBase').getInstance();
 const tokenVerifiactor = require('../../helper/tokenVerificator');
 const {secret} = require('../../config/secrets');
-const {ADMIN_ROLES, BLOCKED_ROLES, MILLISECONDS_ID_DAY} = require('../../constants/values');
+const {BLOCKED_ROLES, MILLISECONDS_ID_DAY} = require('../../constants/values');
 
-const getBookById = require('../../controllers/book/getBookById');
+// const getBookById = require('../../controllers/book/getBookById');
 
-module.exports = async (req, res) => {
+module.exports = async (body) => {
     try {
+        const {bookId, token} = body;
         const BookModel = dataBase.getModel('Book');
         const BookStatModel = dataBase.getModel('BookStat');
         const ReaddingActvityModel = dataBase.getModel('ReadingActivity');
-        const token = req.get('Authorization');
         if (!token) throw new Error('No token');
         const {id: userId, role} = tokenVerifiactor(token, secret);
-        const bookId = req.params.id;
 
         if (BLOCKED_ROLES.includes(role)) throw new Error('You have not permissions');
 
@@ -45,21 +44,21 @@ module.exports = async (req, res) => {
 
         console.log(chalk.magenta(`User ${userId} get book ${bookId} for reading`));
 
-        const book = await getBookById(bookId);
+        // const book = await getBookById(bookId);
+        // res.json({
+        //     success: true,
+        //     message: 'Book status is changed'
+        // });
+        //
+        // const io = req.io;
+        // const s = req.s;
+        // io.to(s.id).emit('book', book);
 
-        res.json({
-            success: true,
-            message: 'Book status is changed'
-        });
-
-        req.io.sockets.emit('book', book);
-
-    } catch
-        (e) {
+    } catch (e) {
         console.log(e);
-        res.json({
-            success: false,
-            message: e.message
-        })
+        // res.json({
+        //     success: false,
+        //     message: e.message
+        // })
     }
 };

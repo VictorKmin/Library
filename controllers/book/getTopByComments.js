@@ -3,18 +3,16 @@ const Sequelize = require("sequelize");
 
 /**
  *
- * @param req
- * @param res
  * @returns top5Book - top 5 book by rating.
  * Firstly we find top 5 books by rating from Rating table.
  * Then we sort this by ID and find all book info from Book table
  * Sort Rating because Book table return sorted by ID array.
  * And because we need to concat two array, we must have a two sorted arrays
+ * @param body
  */
-module.exports = async (req, res) => {
+module.exports = async (body) => {
     try {
-        const page = req.params.page;
-        const limit = req.params.limit;
+        const {page, limit} = body;
         let topBooksIds = [];
         const BookModel = DataBase.getModel('Book');
         const RatingModel = DataBase.getModel('Rating');
@@ -78,11 +76,6 @@ module.exports = async (req, res) => {
             return second.dataValues.countOfComments - first.dataValues.countOfComments
         });
 
-        res.json({
-            success: true,
-            message: commentInfo.length
-        });
-
         const booksCount = await CommentModel.findAll({
             attributes: [
                 'book_id',
@@ -92,13 +85,16 @@ module.exports = async (req, res) => {
         });
 
         const pageCount = Math.ceil(booksCount.length / limit);
-        req.io.sockets.emit('topBooks', {books: topBooks, pageCount})
+
+        return {
+            books: topBooks,
+            pageCount
+        }
+        // const io = req.io;
+        // const s = req.s;
+        // io.to(s.id).emit('topBooks', {books: topBooks, pageCount})
 
     } catch (e) {
         console.log(e);
-        res.json({
-            success: false,
-            message: e.message
-        })
     }
 };

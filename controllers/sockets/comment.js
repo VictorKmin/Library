@@ -3,7 +3,7 @@ const updateComment = require('../../controllers/comment/updateById');
 const deleteComment = require('../../controllers/comment/deleteById');
 const createComment = require('../../controllers/comment/createNewComment');
 
-module.exports = socket => {
+module.exports = (socket) => {
 
     socket.on('getComments', async (body) => {
         const {bookId, limit} = body;

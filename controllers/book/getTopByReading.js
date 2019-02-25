@@ -11,10 +11,9 @@ const Sequelize = require("sequelize");
  * Sort Rating because Book table return sorted by ID array.
  * And because we need to concat two array, we must have a two sorted arrays
  */
-module.exports = async (req, res) => {
+module.exports = async (body) => {
     try {
-        const page = req.params.page;
-        const limit = req.params.limit;
+        const {page, limit} = body;
         let topBooksIds = [];
         const BookModel = DataBase.getModel('Book');
         const RatingModel = DataBase.getModel('Rating');
@@ -91,20 +90,19 @@ module.exports = async (req, res) => {
                 take_read: true
             }
         });
-
-        res.json({
-            success: true,
-            message: readingInfo.length
-        });
-
         const pageCount = Math.ceil(booksCount.length / limit);
-        req.io.sockets.emit('topBooks', {books: topBooks, pageCount})
+
+        return {
+            books: topBooks,
+            pageCount
+        }
+
+
+        // const io = req.io;
+        // const s = req.s;
+        // io.to(s.id).emit('topBooks', {books: topBooks, pageCount})
 
     } catch (e) {
         console.log(e);
-        res.json({
-            success: false,
-            message: e.message
-        })
     }
 };

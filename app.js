@@ -37,23 +37,24 @@ const activityRouter = require('./routes/activity');
 const subjectRouter = require('./routes/subject');
 
 const commentSocket = require('./controllers/sockets/comment');
-const getBookById = require('./controllers/book/getBookById');
 const subjectSocket = require('./controllers/sockets/subject');
 const activitySocket = require('./controllers/sockets/activity');
+const ratingSocket = require('./controllers/sockets/rating');
+const bookSocket = require('./controllers/sockets/book');
 
+let s;
 io.sockets.on('connection', socket => {
+s = socket;
     console.log(chalk.bgGreen('CONNECT!'));
     socket.on('disconnect', () => {
         console.log(chalk.bgRed('DISCONNECT!'));
     });
 
-    commentSocket(socket);
-    subjectSocket(socket);
-    activitySocket(socket)
-
-    socket.on('getBook', async id => {
-        socket.emit('book', await getBookById(id))
-    });
+    commentSocket(socket, io);
+    subjectSocket(socket, io);
+    activitySocket(socket, io);
+    ratingSocket(socket, io);
+    bookSocket(socket, io);
 });
 
 app.use((req, res, next) => {
@@ -62,6 +63,7 @@ app.use((req, res, next) => {
     res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE,PATCH");
     res.header("Access-Control-Allow-Headers", "*");
     req.io = io;
+    req.s = s;
     next();
 });
 app.use(express.static(path.join(__dirname, 'public')));

@@ -27,23 +27,20 @@ const storage = multer.diskStorage({
 });
 const upload = multer({storage});
 
-const topByRating = require('../controllers/book/getTopByRating');
-const topByComments = require('../controllers/book/getTopByComments');
-const topByReading = require('../controllers/book/getTopByReading');
 const getBookById = require('../controllers/book/getBookById');
 const readBook = require('../controllers/book/takeBookForReading');
 const downloadBook = require('../controllers/book/downloadBook');
 const addBook = require('../controllers/book/addBook');
 const gelAllBooks = require('../controllers/book/gelAllBooks');
-const stillReading = require('../controllers/book/stillReading');
+const stillReading = require('../controllers/book/continueReading');
 const returnBook = require('../controllers/book/returnBook');
 //ADMIN CONTROLLERS
 const deleteBook = require('../controllers/book/deleteBook');
 const updateBook = require('../controllers/book/updateBook');
-
-router.get('/topByRating/:page/:limit', topByRating);
-router.get('/topByComments/:page/:limit', topByComments);
-router.get('/topByReading/:page/:limit', topByReading);
+//
+// router.get('/topByRating/:page/:limit', topByRating);
+// router.get('/topByComments/:page/:limit', topByComments);
+// router.get('/topByReading/:page/:limit', topByReading);
 router.get('/:id', getBookById);
 router.get('/download/:id', downloadBook);
 // Name in input on angular must be the same,like key in upload.single('key')
