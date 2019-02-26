@@ -2,8 +2,7 @@ const chalk = require('chalk');
 const dataBase = require('../../dataBase').getInstance();
 const secret = require('../../config/secrets').secret;
 const tokenVerifiactor = require('../../helper/tokenVerificator');
-// const getBookById = require('../../controllers/book/getBookById');
-
+const {ADMIN_ROLES} = require('../../constants/values')
 module.exports = async (body) => {
     try {
 
@@ -27,7 +26,7 @@ module.exports = async (body) => {
 
         const {user_id} = isBookPresent.dataValues;
 
-        if (user_id !== userId && role !== 1) throw new Error('Bad request');
+        if (user_id !== userId && !ADMIN_ROLES.includes(role)) throw new Error('You have not permissions');
 
         const deletedBook = await BookStatModel.destroy({
             where: {
@@ -54,23 +53,9 @@ module.exports = async (body) => {
         });
 
         console.log(chalk.magenta(`User ${userId} return book ${bookId}`));
-        //
-        // const book = await getBookById(bookId);
-        //
-        // res.json({
-        //     success: true,
-        //     message: 'Book successful updated'
-        // });
-        //
-        // const io = req.io;
-        // const s = req.s;
-        // io.emit('book', book);
+
 
     } catch (e) {
         console.log(e);
-        // res.json({
-        //     success: false,
-        //     message: e.message
-        // })
     }
 };

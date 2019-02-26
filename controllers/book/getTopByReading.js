@@ -1,5 +1,6 @@
 const DataBase = require('../../dataBase').getInstance();
 const Sequelize = require("sequelize");
+const chalk = require('chalk');
 
 /**
  *
@@ -91,16 +92,12 @@ module.exports = async (body) => {
             }
         });
         const pageCount = Math.ceil(booksCount.length / limit);
+        console.log(chalk.green(`Get top by reading`));
 
         return {
             books: topBooks,
             pageCount
         }
-
-
-        // const io = req.io;
-        // const s = req.s;
-        // io.to(s.id).emit('topBooks', {books: topBooks, pageCount})
 
     } catch (e) {
         console.log(e);

@@ -44,21 +44,7 @@ module.exports = async (body) => {
 
         console.log(chalk.magenta(`User ${userId} get book ${bookId} for reading`));
 
-        // const book = await getBookById(bookId);
-        // res.json({
-        //     success: true,
-        //     message: 'Book status is changed'
-        // });
-        //
-        // const io = req.io;
-        // const s = req.s;
-        // io.to(s.id).emit('book', book);
-
     } catch (e) {
         console.log(e);
-        // res.json({
-        //     success: false,
-        //     message: e.message
-        // })
     }
 };

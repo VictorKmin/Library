@@ -1,7 +1,8 @@
 const dataBase = require('../../dataBase').getInstance();
 const tokenVerifiactor = require('../../helper/tokenVerificator');
 const {secret} = require('../../config/secrets');
-const {ADMIN_ROLES, BLOCKED_ROLES} = require('../../constants/values');
+const {ADMIN_ROLES} = require('../../constants/values');
+const chalk = require('chalk');
 
 module.exports = async (token, commentId, newComment) => {
     try {
@@ -9,7 +10,7 @@ module.exports = async (token, commentId, newComment) => {
         const CommentActivityModel = dataBase.getModel('CommentActivity');
         if (!token) throw new Error('No token');
         const {role, id: userId} = tokenVerifiactor(token, secret);
-        if (!ADMIN_ROLES.includes(role)) throw new Error('You are noy admin');
+        if (!ADMIN_ROLES.includes(role)) throw new Error('You are not admin');
 
         if (!commentId) throw new Error('Bad request');
         if (!newComment) throw new Error('No comment found');
@@ -43,6 +44,7 @@ module.exports = async (token, commentId, newComment) => {
             created_at: new Date().toISOString()
         });
 
+        console.log(chalk.green(`Book ${book_id} is updated`));
         return book_id
 
     } catch (e) {

@@ -3,14 +3,10 @@ const dataBase = require('../../dataBase').getInstance();
 const tokenVerifiactor = require('../../helper/tokenVerificator');
 const secret = require('../../config/secrets').secret;
 const MILLISECONDS_ID_DAY = require('../../constants/values').MILLISECONDS_ID_DAY;
-// const getBookById = require('../../controllers/book/getBookById');
 
 module.exports = async (body) => {
     try {
-
         const {bookId, token} = body;
-        // const {bookId} = req.body;
-        // const token = req.get('Authorization');
 
         const BookStatModel = dataBase.getModel('BookStat');
         const ReaddingActvityModel = dataBase.getModel('ReadingActivity');
@@ -51,20 +47,7 @@ module.exports = async (body) => {
 
         console.log(chalk.magenta(`User with id ${userId} still reading book ${bookId}`));
 
-        // const book = await getBookById(bookId);
-        //
-        // res.json({
-        //     success: true,
-        //     message: 'Book time is changed'
-        // });
-        //
-        // req.io.sockets.emit('book', book);
-
     } catch (e) {
         console.log(e);
-        // res.json({
-        //     success: false,
-        //     message: e.message
-        // })
     }
 };

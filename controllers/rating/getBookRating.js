@@ -3,6 +3,7 @@ const Sequelize = require("sequelize");
 const tokenVerificator = require('../../helper/tokenVerificator');
 const {secret} = require('../../config/secrets');
 const {BLOCKED_ROLES} = require('../../constants/values');
+const chalk = require('chalk');
 
 module.exports = async (body) => {
     try {
@@ -19,10 +20,6 @@ module.exports = async (body) => {
             }
         });
 
-        voteInfo.forEach(value => {
-            console.log(value.dataValues.star);
-        });
-
         // If user logged we check does he already voted and find vote info
         if (token) {
             const {role, id: userId} = tokenVerificator(token, secret);
@@ -31,7 +28,8 @@ module.exports = async (body) => {
             isUserCanVote = !voteInfo.some(elem => elem.dataValues.user_id === userId);
             // If user already voted. Get star what he rate
             if (!isUserCanVote) {
-                votedStar = voteInfo[0].dataValues.star
+                let index = voteInfo.map((el) => el.dataValues.user_id).indexOf(userId);
+                votedStar = voteInfo[index].dataValues.star
             }
         }
 
@@ -44,7 +42,7 @@ module.exports = async (body) => {
             group: "book_id",
             where: {
                 book_id: bookId
-            }
+            },
         });
 
         if (!rating.length) return {isUserCanVote};
@@ -52,6 +50,7 @@ module.exports = async (body) => {
         rating[0].dataValues.isUserCanVote = isUserCanVote;
         rating[0].dataValues.votedStar = votedStar;
 
+        console.log(chalk.green(`Get rating of book ${bookId}`));
         // rating is Array with just 1 value. And we need to return just first value
         return rating[0];
     } catch (e) {

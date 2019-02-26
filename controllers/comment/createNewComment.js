@@ -1,7 +1,8 @@
 const dataBase = require('../../dataBase').getInstance();
 const tokenVerifiactor = require('../../helper/tokenVerificator');
 const {secret} = require('../../config/secrets');
-const {ADMIN_ROLES, BLOCKED_ROLES} = require('../../constants/values');
+const {BLOCKED_ROLES} = require('../../constants/values');
+const chalk = require('chalk');
 
 module.exports = async (comment, bookId, token) => {
     try {
@@ -30,6 +31,7 @@ module.exports = async (comment, bookId, token) => {
             new_comment: comment,
             created_at: new Date().toISOString()
         });
+        console.log(chalk.green(`Comment ${comment} is created`));
 
     } catch (e) {
         console.log(e.message);

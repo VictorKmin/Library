@@ -1,7 +1,8 @@
 const dataBase = require('../../dataBase').getInstance();
 const tokenVerifiactor = require('../../helper/tokenVerificator');
 const {secret} = require('../../config/secrets');
-const {ADMIN_ROLES, BLOCKED_ROLES} = require('../../constants/values');
+const {ADMIN_ROLES} = require('../../constants/values');
+const chalk = require('chalk');
 
 module.exports = async (body) => {
     try {
@@ -16,6 +17,7 @@ module.exports = async (body) => {
         await SubjectModel.create({
             subject
         });
+        console.log(chalk.green(`New subject is created`));
 
     } catch (e) {
         console.log(e);

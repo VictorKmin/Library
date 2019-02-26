@@ -1,14 +1,19 @@
 const getBookRating = require('../../controllers/rating/getBookRating');
 const rateBook = require('../../controllers/rating/rateBook');
-module.exports = socket => {
-    console.log(socket.id);
+const deleteVote = require('../../controllers/rating/deleteVote');
+module.exports = (socket, io) => {
 
     socket.on('getRating', async (body) => {
-        socket.emit('bookRating', await getBookRating(body))
+        io.to(socket.id).emit('bookRating', await getBookRating(body))
     });
 
     socket.on('rateBook', async (body) => {
         await rateBook(body);
-     socket.emit('bookRating', await getBookRating(body))
+        io.to(socket.id).emit('bookRating', await getBookRating(body))
+    });
+
+    socket.on('deleteVote', async (body) => {
+        await deleteVote(body);
+        io.to(socket.id).emit('bookRating', await getBookRating(body))
     });
 };

@@ -1,9 +1,13 @@
 const DataBase = require('../../dataBase').getInstance();
 const Sequelize = require("sequelize");
+const chalk = require('chalk');
 
-// module.exports = async (req, res) => {
 module.exports = async (id) => {
     try {
+
+        console.log('***********************************');
+        console.log(id);
+        console.log('***********************************');
         const BookModel = DataBase.getModel('Book');
         const CommentModel = DataBase.getModel('Comment');
         const BookStatModel = DataBase.getModel('BookStat');
@@ -51,6 +55,7 @@ module.exports = async (id) => {
         }
         book.dataValues.countOfComments = countOfComments;
 
+        console.log(chalk.green(`Get info about ${id}`));
         return book
 
     } catch (e) {

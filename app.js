@@ -41,13 +41,13 @@ const subjectSocket = require('./controllers/sockets/subject');
 const activitySocket = require('./controllers/sockets/activity');
 const ratingSocket = require('./controllers/sockets/rating');
 const bookSocket = require('./controllers/sockets/book');
+const userInfo = require('./controllers/sockets/user');
 
-let s;
 io.sockets.on('connection', socket => {
-s = socket;
-    console.log(chalk.bgGreen('CONNECT!'));
+
+    console.log(chalk.bgGreen.black( socket.id + ' CONNECT!'));
     socket.on('disconnect', () => {
-        console.log(chalk.bgRed('DISCONNECT!'));
+        console.log(chalk.bgRed(socket.id + ' DISCONNECT!'));
     });
 
     commentSocket(socket, io);
@@ -55,6 +55,7 @@ s = socket;
     activitySocket(socket, io);
     ratingSocket(socket, io);
     bookSocket(socket, io);
+    userInfo(socket, io);
 });
 
 app.use((req, res, next) => {
@@ -63,7 +64,6 @@ app.use((req, res, next) => {
     res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE,PATCH");
     res.header("Access-Control-Allow-Headers", "*");
     req.io = io;
-    req.s = s;
     next();
 });
 app.use(express.static(path.join(__dirname, 'public')));

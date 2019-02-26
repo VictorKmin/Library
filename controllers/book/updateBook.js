@@ -6,7 +6,7 @@ let updateAuxiliary = require('../book/bookHelpers/updateAuxiliary');
 let getBookById = require('../book/getBookById');
 const fs = require('fs');
 const path = require('path');
-const {ADMIN_ROLES, BLOCKED_ROLES, MAIN_PATH} = require('../../constants/values');
+const {ADMIN_ROLES, MAIN_PATH} = require('../../constants/values');
 
 /**
  * This method using for update book with new parameters
@@ -111,19 +111,10 @@ module.exports = async (req, res) => {
 
         console.log(chalk.bgMagenta(`Book updated successful`));
 
-        const updatedBook = await getBookById(bookId);
         res.json({
             success: true,
             message: 'Book successful updated'
         });
-
-        /**
-         * I have socket in request. If all fine
-         * I emit event with comments and catch this Event on Angular
-         */
-        const io = req.io;
-        const s = req.s;
-        io.to(s.id).emit('book' , updatedBook)
 
     } catch
         (e) {

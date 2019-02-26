@@ -6,24 +6,26 @@ const takeBookForReading = require('../../controllers/book/takeBookForReading');
 const continueReading = require('../book/continueReading');
 const returnBook = require('../book/returnBook');
 
-module.exports = socket => {
+module.exports = (socket, io) => {
     socket.on('getBook', async id => {
         console.log(socket.id);
-
-        socket.emit('book', await getBookById(id))
+        console.log('_____________________________');
+        console.log(id);
+        console.log('_____________________________');
+        io.to(socket.id).emit('book', await getBookById(id));
     });
 
     socket.on('getTop', async (body) => {
         const {topValue} = body;
 
         if (topValue === 'rating') {
-            socket.emit('topBooks', await getTopByRating(body))
+            io.to(socket.id).emit('topBooks', await getTopByRating(body))
         }
         if (topValue === 'reading') {
-            socket.emit('topBooks', await getTopByReading(body))
+            io.to(socket.id).emit('topBooks', await getTopByReading(body))
         }
         if (topValue === 'comment') {
-            socket.emit('topBooks', await getTopByComments(body))
+            io.to(socket.id).emit('topBooks', await getTopByComments(body))
         }
     });
 
@@ -39,8 +41,6 @@ module.exports = socket => {
         if (bookEv === 'return') {
             await returnBook(body);
         }
-        socket.emit('book', await getBookById(bookId))
-
-
+        io.to(socket.id).emit('book', await getBookById(bookId))
     })
 };

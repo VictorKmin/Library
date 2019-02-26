@@ -1,4 +1,5 @@
 const dataBase = require('../../dataBase').getInstance();
+const chalk = require('chalk');
 
 module.exports = async (bookId, limit) => {
     try {
@@ -18,6 +19,7 @@ module.exports = async (bookId, limit) => {
             limit
         });
 
+        console.log(chalk.green(`Get comments of book ${bookId}`));
         return allComments
 
     } catch (e) {

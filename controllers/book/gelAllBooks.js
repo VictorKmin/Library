@@ -15,7 +15,6 @@ module.exports = async (req, res) => {
         if (!page || page < 0 || limit < 0 || !limit) throw new Error('Bad request');
         const offsetCount = (page * limit) - limit;
 
-        let booksIds = [];
         const BookModel = DataBase.getModel('Book');
         const RatingModel = DataBase.getModel('Rating');
 
@@ -24,11 +23,7 @@ module.exports = async (req, res) => {
             offset: offsetCount
         });
 
-        allBooks.forEach(book => {
-            const {id} = book.dataValues;
-            // Push in this array just fot search from Book table
-            booksIds.push(id);
-        });
+        let booksIds =  allBooks.map(book => book.dataValues.id);
 
         console.log(booksIds);
         // SELECT bookid, AVG(star), COUNT(id) FROM rating GROUP BY bookid ORDER BY AVG(star) DESC

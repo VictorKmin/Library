@@ -1,7 +1,8 @@
 const dataBase = require('../../dataBase').getInstance();
 const tokenVerifiactor = require('../../helper/tokenVerificator');
 const {secret} = require('../../config/secrets');
-const {ADMIN_ROLES, BLOCKED_ROLES} = require('../../constants/values');
+const {ADMIN_ROLES} = require('../../constants/values');
+const chalk = require('chalk');
 
 module.exports = async (body) => {
     try {
@@ -22,6 +23,7 @@ module.exports = async (body) => {
                 id: subjectId
             }
         });
+        console.log(chalk.green(`Subject with id ${subjectId} is updated`));
 
     } catch (e) {
         console.log(e);

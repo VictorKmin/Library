@@ -1,6 +1,8 @@
 const dataBase = require('../../dataBase').getInstance();
 const tokenVereficator = require('../../helper/tokenVerificator');
 const secret = require('../../config/secrets').secret;
+const chalk = require('chalk');
+
 module.exports = async (req, res) => {
     try {
         const UserModel = dataBase.getModel('User');
@@ -13,6 +15,8 @@ module.exports = async (req, res) => {
                 id
             }
         });
+
+        console.log(chalk.green(`Get user info`));
 
         res.json({
             success: true,

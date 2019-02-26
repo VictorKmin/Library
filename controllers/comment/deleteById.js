@@ -2,6 +2,7 @@ const dataBase = require('../../dataBase').getInstance();
 const tokenVerifiactor = require('../../helper/tokenVerificator');
 const {secret} = require('../../config/secrets');
 const {ADMIN_ROLES} = require('../../constants/values');
+const chalk = require('chalk');
 
 
 /**
@@ -42,6 +43,8 @@ module.exports = async (commentId, token) => {
                 id: commentId
             }
         });
+
+        console.log(chalk.green(`Comment is deleted`));
 
         return book_id;
 
