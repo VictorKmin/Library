@@ -31,7 +31,7 @@ module.exports = async (req, res) => {
         });
         if (!bookToDelete) throw new Error(`Book with id ${bookId} not found`);
 
-        const {is_digital, image} = bookToDelete.dataValues;
+        const {image} = bookToDelete.dataValues;
 
         //Starting delete all record;
         await SearchModel.destroy({
@@ -72,29 +72,28 @@ module.exports = async (req, res) => {
         });
 
         // Then we need to delete files if book is digital
-        if (is_digital) {
-            const digitalInfo = await DigitalModel.findOne({
+        const digitalInfo = await DigitalModel.findOne({
+            where: {
+                book_id: bookId
+            }
+        });
+
+        if (digitalInfo) {
+            const {location} = digitalInfo.dataValues;
+            // DELETE FILE
+            const filePath = path.normalize(`${MAIN_PATH}/public/${location}`);
+
+            fs.unlink(`${filePath}`, err => {
+                if (err) console.log(err)
+            });
+
+            await DigitalModel.destroy({
                 where: {
                     book_id: bookId
                 }
-            });
-
-            if (digitalInfo) {
-                const {location} = digitalInfo.dataValues;
-                // DELETE FILE
-                const filePath = path.normalize(`${MAIN_PATH}/public/${location}`);
-
-                fs.unlink(`${filePath}`, err => {
-                    if (err) console.log(err)
-                });
-
-                await DigitalModel.destroy({
-                    where: {
-                        book_id: bookId
-                    }
-                })
-            }
+            })
         }
+
 
         // DELETE BOOK IMAGE
         const imgPath = path.normalize(`${MAIN_PATH}/public/${image}`);

@@ -4,10 +4,6 @@ const chalk = require('chalk');
 
 module.exports = async (id) => {
     try {
-
-        console.log('***********************************');
-        console.log(id);
-        console.log('***********************************');
         const BookModel = DataBase.getModel('Book');
         const CommentModel = DataBase.getModel('Comment');
         const BookStatModel = DataBase.getModel('BookStat');

@@ -1,6 +1,11 @@
 const express = require('express');
 const app = express();
+const dotenv = require('dotenv');
 const io = require('socket.io').listen(app.listen(3001, err => {
+    dotenv.load();
+    console.log('__________________________');
+    console.log(process.env);
+    console.log('__________________________');
     // http://patorjk.com/software/taag/#p=display&f=Electronic&t=LIBRARY -> HOW I DO THIS
     if (!err) console.log(chalk.blue(
         ' ▄            ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄   ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄         ▄ \n' +

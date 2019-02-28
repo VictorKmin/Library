@@ -1,7 +1,6 @@
 const mailer = require('nodemailer');
 const chalk = require('chalk');
-const NOTIFICATION_EMAIL = require('../config/mail').NOTIFICATION_EMAIL;
-const NOTIFICATION_PASSWORD = require('../config/mail').NOTIFICATION_PASSWORD;
+const {NOTIFICATION_EMAIL, NOTIFICATION_PASSWORD, EMAIL_HOST, EMAIL_PORT} = require('../config/mail');
 const ANGULAR_IP = require('../constants/values').ANGULAR_IP;
 module.exports = (body) => {
     const {title, email, name, book_id} = body;
@@ -14,8 +13,8 @@ module.exports = (body) => {
          If you not return book until 7 days this email will be sanded to HR`;
 
     let transporter = mailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 587,
+        host: EMAIL_HOST,
+        port: EMAIL_PORT,
         secure: false,
         auth: {
             user: NOTIFICATION_EMAIL,

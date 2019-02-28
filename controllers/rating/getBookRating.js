@@ -49,6 +49,7 @@ module.exports = async (body) => {
 
         rating[0].dataValues.isUserCanVote = isUserCanVote;
         rating[0].dataValues.votedStar = votedStar;
+        rating[0].dataValues.avgStar = +(rating[0].dataValues.avgStar.slice(0, 3));
 
         console.log(chalk.green(`Get rating of book ${bookId}`));
         // rating is Array with just 1 value. And we need to return just first value

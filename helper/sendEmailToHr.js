@@ -1,8 +1,7 @@
 const mailer = require('nodemailer');
 const chalk = require('chalk');
-const HR_EMAIL = require('../config/mail').HR_EMAIL;
-const NOTIFICATION_EMAIL = require('../config/mail').NOTIFICATION_EMAIL;
-const NOTIFICATION_PASSWORD = require('../config/mail').NOTIFICATION_PASSWORD;
+const {NOTIFICATION_EMAIL, NOTIFICATION_PASSWORD, EMAIL_HOST, EMAIL_PORT, HR_EMAIL} = require('../config/mail');
+
 module.exports = (body) => {
     const {title, name} = body;
 
@@ -12,8 +11,8 @@ module.exports = (body) => {
     Please find him! <br>`;
 
     const transporter = mailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 587,
+        host: EMAIL_HOST,
+        port: EMAIL_PORT,
         secure: false,
         auth: {
             user: NOTIFICATION_EMAIL,

@@ -88,6 +88,7 @@ module.exports = async (body) => {
         const pageCount = Math.ceil(booksCount.length / limit);
 
         console.log(chalk.green(`Get top by comments`));
+
         return {
             books: topBooks,
             pageCount

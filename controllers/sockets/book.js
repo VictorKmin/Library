@@ -8,10 +8,6 @@ const returnBook = require('../book/returnBook');
 
 module.exports = (socket, io) => {
     socket.on('getBook', async id => {
-        console.log(socket.id);
-        console.log('_____________________________');
-        console.log(id);
-        console.log('_____________________________');
         io.to(socket.id).emit('book', await getBookById(id));
     });
 

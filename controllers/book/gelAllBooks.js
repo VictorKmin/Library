@@ -39,7 +39,7 @@ module.exports = async (req, res) => {
             }
         });
 
-        allBooks.map((bookStat) => {
+        allBooks.map(bookStat => {
             ratingInfo.forEach(rating => {
                 if (bookStat.dataValues.id === rating.dataValues.book_id) {
                     bookStat.dataValues.countOfVotes = rating.dataValues.countOfVotes;
